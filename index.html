@@ -17,85 +17,126 @@ body{font-family:'Barlow',sans-serif;background:var(--dark);color:var(--text);mi
 .setup-card p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
 .setup-card p a{color:var(--gold);text-decoration:none;}
 .field-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
-.field-input{width:100%;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--text);margin-bottom:16px;-webkit-appearance:none;transition:border-color 0.2s;}
+.field-input{width:100%;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);margin-bottom:14px;-webkit-appearance:none;transition:border-color 0.2s;}
 .field-input:focus{outline:none;border-color:var(--gold);}
-select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 8L0 0h12z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
-.btn-primary{width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:15px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
-.btn-primary:active{opacity:0.85;}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 8L0 0h12z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.btn-primary{width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:15px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
 .btn-outline{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;margin-top:10px;}
 .setup-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
 .setup-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
 .step-num{background:var(--border);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px;flex-shrink:0;}
+/* APP SHELL */
 #app{display:none;flex-direction:column;height:100vh;height:100dvh;}
 .app-header{background:var(--mid);border-bottom:2px solid var(--red);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .app-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;letter-spacing:1px;color:var(--gold);}
 .app-title span{color:var(--red);}
-.sync-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.sync-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
 .sync-btn.syncing{border-color:var(--green);color:var(--green);}
-.tab-bar{background:var(--mid);display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;}
-.tab-btn{flex:1;min-width:60px;padding:12px 4px;background:transparent;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;position:relative;bottom:-1px;white-space:nowrap;}
+.tab-bar{background:var(--mid);display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.tab-btn{flex:1;padding:12px 4px;background:transparent;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;border-bottom:3px solid transparent;position:relative;bottom:-1px;white-space:nowrap;}
 .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
 .tab-content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .section-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:2px;text-transform:uppercase;}
 .btn-add{background:var(--red);color:white;border:none;border-radius:8px;padding:9px 16px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
-.athlete-grid{display:flex;flex-direction:column;gap:10px;}
-.athlete-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+/* ROSTER */
+.athlete-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .athlete-info{flex:1;min-width:0;}
 .athlete-name{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;}
-.athlete-meta{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+.athlete-meta{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:8px;}
 .badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-left:6px;}
 .badge-m{background:rgba(52,152,219,0.2);color:var(--blue);}
 .badge-f{background:rgba(214,40,40,0.2);color:#ff6b8a;}
 .card-actions{display:flex;gap:8px;flex-shrink:0;}
-.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 10px;cursor:pointer;font-size:14px;transition:all 0.2s;}
+.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 10px;cursor:pointer;font-size:14px;}
 .btn-icon:active{opacity:0.7;}
+/* MODALS */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:12px;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;}
 .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:2px;margin-bottom:18px;text-transform:uppercase;color:var(--gold);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .form-group{margin-bottom:14px;}
 .modal-actions{display:flex;gap:10px;margin-top:6px;}
-.btn-cancel{flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-.btn-save{flex:2;background:var(--red);color:white;border:none;border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-.meet-selector{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
-.meet-row{display:flex;gap:8px;align-items:flex-end;}
-.meet-row .field-input{margin-bottom:0;flex:1;font-size:14px;}
-.entries-table{width:100%;border-collapse:collapse;font-size:13px;}
-.entries-table th{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);}
-.entries-table td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
-.result-badge{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--gold);}
+.btn-cancel{flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;cursor:pointer;}
+.btn-save{flex:2;background:var(--red);color:white;border:none;border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;cursor:pointer;}
+/* MEET SHEET MODAL — full screen */
+.meet-sheet-overlay{position:fixed;inset:0;background:var(--dark);z-index:200;display:flex;flex-direction:column;}
+.meet-sheet-header{background:var(--mid);border-bottom:2px solid var(--red);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.meet-sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--gold);letter-spacing:1px;}
+.meet-sheet-close{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.gender-tab-bar{display:flex;background:var(--mid);border-bottom:1px solid var(--border);flex-shrink:0;}
+.gender-tab{flex:1;padding:12px;background:transparent;border:none;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-bottom:3px solid transparent;position:relative;bottom:-1px;}
+.gender-tab.boys{color:var(--blue);}
+.gender-tab.boys.active{border-bottom-color:var(--blue);}
+.gender-tab.girls{color:#ff6b8a;}
+.gender-tab.girls.active{border-bottom-color:#ff6b8a;}
+.meet-sheet-body{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch;}
+/* EVENT BLOCKS */
+.event-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;}
+.event-block-header{background:var(--mid);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.event-block-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:1px;}
+.event-block-meta{font-size:12px;color:var(--muted);}
+.event-chevron{color:var(--muted);font-size:14px;transition:transform 0.2s;}
+.event-block.open .event-chevron{transform:rotate(180deg);}
+.event-block-body{display:none;padding:12px 14px;}
+.event-block.open .event-block-body{display:block;}
+/* ATHLETE SLOT */
+.athlete-slot{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.slot-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.slot-label.alt{color:#888;font-style:italic;}
+.slot-row{display:flex;gap:8px;align-items:center;}
+.slot-row select{flex:1;background:var(--mid);border:1px solid var(--border);border-radius:7px;padding:9px 10px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);-webkit-appearance:none;}
+.slot-row select:focus{outline:none;border-color:var(--gold);}
+.split-grid{display:grid;gap:6px;margin-top:8px;}
+.split-row{display:flex;gap:6px;align-items:center;}
+.split-label{font-size:11px;color:var(--muted);width:52px;flex-shrink:0;}
+.split-input{flex:1;background:var(--mid);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--text);text-align:center;}
+.split-input:focus{outline:none;border-color:var(--gold);}
+.total-row{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
+.total-label{font-size:12px;color:var(--muted);}
+.total-value{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--gold);}
+.relay-divider{height:1px;background:var(--border);margin:10px 0;}
+.relay-alt-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted);margin:8px 0 6px;}
+/* RECORDS */
 .filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
 .filter-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(247,183,49,0.08);}
-.record-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:4px;}
+.record-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:2px;}
 .record-athlete{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
 .record-event{font-size:12px;color:var(--muted);margin-top:2px;}
 .record-result{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--gold);text-align:right;}
 .record-meet{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;}
+/* EVENTS TAB */
+.event-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.event-name-text{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+.event-cat-text{font-size:12px;color:var(--muted);}
+.event-cat-header{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:8px;margin-top:14px;}
+.event-cat-header:first-of-type{margin-top:0;}
+.add-event-row{display:flex;gap:8px;margin-bottom:14px;}
+.add-event-row .field-input{margin-bottom:0;flex:1;}
+.add-event-row select{width:120px;flex:none;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:11px 10px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);-webkit-appearance:none;}
+/* MISC */
 .status-bar{background:var(--mid);border-top:1px solid var(--border);padding:7px 14px;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;}
 .status-dot.offline{background:var(--muted);}
 .empty-state{text-align:center;padding:40px 24px;color:var(--muted);}
 .empty-state .empty-icon{font-size:36px;margin-bottom:10px;}
-.empty-state p{font-size:13px;line-height:1.5;}
-.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;padding:11px 22px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;opacity:0;transition:all 0.3s;z-index:200;white-space:nowrap;pointer-events:none;}
+.empty-state p{font-size:13px;line-height:1.6;}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;padding:11px 22px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;opacity:0;transition:all 0.3s;z-index:300;white-space:nowrap;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.error{background:var(--red);color:white;}
+.meet-list-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:pointer;}
+.meet-list-item:hover{border-color:var(--gold);}
+.meet-item-name{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;}
+.meet-item-date{font-size:12px;color:var(--muted);margin-top:2px;}
+.meet-item-count{font-size:12px;color:var(--gold);}
 pre#script-code{background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:monospace;font-size:11px;color:#aaa;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin-bottom:12px;}
-/* EVENTS TAB */
-.event-category-header{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:10px 0 6px;border-bottom:1px solid var(--border);margin-bottom:8px;margin-top:16px;}
-.event-category-header:first-of-type{margin-top:0;}
-.event-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.event-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
-.event-cat-badge{font-size:11px;color:var(--muted);margin-top:2px;}
-.add-event-row{display:flex;gap:8px;margin-bottom:16px;}
-.add-event-row .field-input{margin-bottom:0;flex:1;}
-.add-event-row select.field-input{width:130px;flex:none;}
+.save-meet-btn{width:100%;background:var(--green);color:#000;border:none;border-radius:10px;padding:14px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:2px;cursor:pointer;margin-top:4px;}
 </style>
 </head>
 <body>
 
+<!-- SETUP -->
 <div id="setup-screen">
   <div class="setup-logo">⚡ T&F</div>
   <div class="setup-sub">Track & Field Manager</div>
@@ -107,18 +148,19 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
         <div class="setup-step"><div class="step-num">1</div><div>Create a new Google Sheet at <strong style="color:var(--text)">sheets.google.com</strong></div></div>
         <div class="setup-step"><div class="step-num">2</div><div>Click <strong style="color:var(--text)">Extensions → Apps Script</strong></div></div>
         <div class="setup-step"><div class="step-num">3</div><div>Paste the script from the <strong style="color:var(--gold)">SCRIPT tab</strong>, then <strong style="color:var(--text)">Deploy → New Deployment → Web App</strong></div></div>
-        <div class="setup-step"><div class="step-num">4</div><div>Execute as: <strong style="color:var(--text)">Me</strong> · Access: <strong style="color:var(--text)">Anyone</strong> → Copy the Web App URL</div></div>
+        <div class="setup-step"><div class="step-num">4</div><div>Execute as: <strong style="color:var(--text)">Me</strong> · Access: <strong style="color:var(--text)">Anyone</strong> → Copy URL</div></div>
       </div>
     </div>
     <div class="form-group"><label class="field-label">Web App URL</label><input type="url" class="field-input" id="api-url" placeholder="https://script.google.com/macros/s/..."/></div>
     <div class="form-group"><label class="field-label">Team / School Name</label><input type="text" class="field-input" id="team-name" placeholder="e.g. Riverside High Track"/></div>
     <button class="btn-primary" onclick="connectApp()">⚡ CONNECT & LAUNCH</button>
-    <button class="btn-outline" onclick="launchDemo()">Try Demo Mode (no Google Sheets)</button>
+    <button class="btn-outline" onclick="launchDemo()">Try Demo Mode</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<!-- MAIN APP -->
 <div id="app">
   <div class="app-header">
     <div class="app-title">⚡ <span id="team-display">T&F</span></div>
@@ -126,40 +168,31 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   </div>
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('roster',this)">ROSTER</button>
-    <button class="tab-btn" onclick="switchTab('meet',this)">MEET</button>
+    <button class="tab-btn" onclick="switchTab('meets',this)">MEETS</button>
     <button class="tab-btn" onclick="switchTab('records',this)">RECORDS</button>
     <button class="tab-btn" onclick="switchTab('events',this)">EVENTS</button>
     <button class="tab-btn" onclick="switchTab('script',this)">SCRIPT</button>
   </div>
 
-  <!-- ROSTER -->
+  <!-- ROSTER TAB -->
   <div class="tab-content" id="tab-roster">
     <div class="section-header">
       <div class="section-title">ROSTER <span style="color:var(--muted);font-size:15px;" id="roster-count"></span></div>
       <button class="btn-add" onclick="openAthleteModal()">+ ATHLETE</button>
     </div>
-    <div class="athlete-grid" id="athlete-list"></div>
+    <div id="athlete-list"></div>
   </div>
 
-  <!-- MEET -->
-  <div class="tab-content" id="tab-meet" style="display:none">
+  <!-- MEETS TAB -->
+  <div class="tab-content" id="tab-meets" style="display:none">
     <div class="section-header">
-      <div class="section-title">MEET ENTRIES</div>
-      <button class="btn-add" onclick="openEntryModal()">+ ENTRY</button>
+      <div class="section-title">MEETS</div>
+      <button class="btn-add" onclick="openNewMeetModal()">+ NEW MEET</button>
     </div>
-    <div class="meet-selector">
-      <label class="field-label">ACTIVE MEET</label>
-      <div class="meet-row">
-        <input type="text" class="field-input" id="meet-name-input" placeholder="Meet name"/>
-        <input type="date" class="field-input" id="meet-date-input" style="width:140px;"/>
-        <button class="btn-add" style="height:44px;" onclick="setActiveMeet()">SET</button>
-      </div>
-    </div>
-    <div class="section-header"><div class="section-title" style="font-size:16px;" id="active-meet-label">NO MEET SELECTED</div></div>
-    <div id="meet-entries-list"></div>
+    <div id="meets-list"></div>
   </div>
 
-  <!-- RECORDS -->
+  <!-- RECORDS TAB -->
   <div class="tab-content" id="tab-records" style="display:none">
     <div class="section-header"><div class="section-title">MASTER RECORDS</div></div>
     <div class="filter-bar">
@@ -171,33 +204,29 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
     <div id="records-list"></div>
   </div>
 
-  <!-- EVENTS -->
+  <!-- EVENTS TAB -->
   <div class="tab-content" id="tab-events" style="display:none">
     <div class="section-header">
       <div class="section-title">EVENTS <span style="color:var(--muted);font-size:15px;" id="events-count"></span></div>
     </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Add or remove events used in meet entries. Changes save automatically.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Manage your event list. These appear in meet sheets in the order listed.</p>
     <div class="add-event-row">
-      <input type="text" class="field-input" id="new-event-name" placeholder="Event name (e.g. 55m Dash)"/>
-      <select class="field-input" id="new-event-cat">
-        <option value="Sprints">Sprints</option>
-        <option value="Distance">Distance</option>
-        <option value="Hurdles">Hurdles</option>
-        <option value="Relays">Relays</option>
-        <option value="Jumps">Jumps</option>
-        <option value="Throws">Throws</option>
-        <option value="Combined">Combined</option>
-        <option value="Other">Other</option>
+      <input type="text" class="field-input" id="new-event-name" placeholder="Event name"/>
+      <select id="new-event-cat" style="background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:11px 10px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);-webkit-appearance:none;margin-bottom:14px;">
+        <option value="Sprints">Sprints</option><option value="Distance">Distance</option>
+        <option value="Hurdles">Hurdles</option><option value="Relays">Relays</option>
+        <option value="Jumps">Jumps</option><option value="Throws">Throws</option>
+        <option value="Combined">Combined</option><option value="Other">Other</option>
       </select>
-      <button class="btn-add" onclick="addEvent()">+ ADD</button>
+      <button class="btn-add" onclick="addEvent()" style="height:42px;margin-bottom:14px;">+ ADD</button>
     </div>
     <div id="events-list"></div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- SCRIPT TAB -->
   <div class="tab-content" id="tab-script" style="display:none">
-    <div class="section-header"><div class="section-title">APPS SCRIPT CODE</div></div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Copy this into your Google Apps Script editor. Deploy as Web App (Execute as: Me, Access: Anyone).</p>
+    <div class="section-header"><div class="section-title">APPS SCRIPT</div></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Paste into Extensions → Apps Script. Deploy as Web App (Execute as: Me, Access: Anyone).</p>
     <pre id="script-code"></pre>
     <button class="btn-add" style="width:100%;justify-content:center;" onclick="copyScript()">📋 COPY SCRIPT</button>
   </div>
@@ -205,6 +234,20 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   <div class="status-bar">
     <div><span class="status-dot" id="status-dot"></span><span id="status-text">Ready</span></div>
     <div id="last-sync">Not synced</div>
+  </div>
+</div>
+
+<!-- NEW MEET MODAL -->
+<div class="modal-overlay" id="new-meet-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">NEW MEET</div>
+    <div class="form-group"><label class="field-label">Meet Name</label><input type="text" class="field-input" id="nm-name" placeholder="e.g. County Championships"/></div>
+    <div class="form-group"><label class="field-label">Date</label><input type="date" class="field-input" id="nm-date"/></div>
+    <div class="form-group"><label class="field-label">Location</label><input type="text" class="field-input" id="nm-location" placeholder="e.g. Central Park Stadium"/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('new-meet-modal')">CANCEL</button>
+      <button class="btn-save" onclick="createMeet()">CREATE MEET</button>
+    </div>
   </div>
 </div>
 
@@ -221,10 +264,7 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
         <select class="field-input" id="ath-grade"><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label class="field-label">Age</label><input type="number" class="field-input" id="ath-age" placeholder="16" min="10" max="19"/></div>
-      <div class="form-group"><label class="field-label">Events (comma sep.)</label><input type="text" class="field-input" id="ath-events" placeholder="100m, Long Jump"/></div>
-    </div>
+    <div class="form-group"><label class="field-label">Age</label><input type="number" class="field-input" id="ath-age" placeholder="16" min="10" max="19"/></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('athlete-modal')">CANCEL</button>
       <button class="btn-save" onclick="saveAthlete()">SAVE ATHLETE</button>
@@ -232,41 +272,38 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   </div>
 </div>
 
-<!-- ENTRY MODAL -->
-<div class="modal-overlay" id="entry-modal" style="display:none">
-  <div class="modal">
-    <div class="modal-title">LOG RESULT</div>
-    <div class="form-group"><label class="field-label">Athlete</label><select class="field-input" id="entry-athlete"></select></div>
-    <div class="form-group"><label class="field-label">Event</label><select class="field-input" id="entry-event"></select></div>
-    <div class="form-row">
-      <div class="form-group"><label class="field-label">Result (time / dist)</label><input type="text" class="field-input" id="entry-result" placeholder='12.45 or 18&apos;6"'/></div>
-      <div class="form-group"><label class="field-label">Place</label><input type="number" class="field-input" id="entry-place" placeholder="1" min="1"/></div>
+<!-- MEET SHEET — full screen -->
+<div class="meet-sheet-overlay" id="meet-sheet" style="display:none">
+  <div class="meet-sheet-header">
+    <div>
+      <div class="meet-sheet-title" id="ms-title">MEET</div>
+      <div style="font-size:12px;color:var(--muted);" id="ms-subtitle"></div>
     </div>
-    <div class="form-group"><label class="field-label">Notes (PR, wind, etc.)</label><input type="text" class="field-input" id="entry-notes" placeholder="PR, Wind +1.2, etc."/></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('entry-modal')">CANCEL</button>
-      <button class="btn-save" onclick="saveEntry()">LOG RESULT</button>
+    <div style="display:flex;gap:8px;">
+      <button class="meet-sheet-close" onclick="saveMeetSheet()" style="border-color:var(--green);color:var(--green);">💾 SAVE</button>
+      <button class="meet-sheet-close" onclick="closeMeetSheet()">✕ CLOSE</button>
     </div>
   </div>
+  <div class="gender-tab-bar">
+    <button class="gender-tab boys active" onclick="switchGenderTab('M',this)">♂ BOYS</button>
+    <button class="gender-tab girls" onclick="switchGenderTab('F',this)">♀ GIRLS</button>
+  </div>
+  <div class="meet-sheet-body" id="meet-sheet-body"></div>
 </div>
 
 <script>
-const APPS_SCRIPT_CODE = `// ============================================
-// TRACK & FIELD MANAGER — Google Apps Script
-// Deploy: Extensions > Apps Script
-// Then: Deploy > New Deployment > Web App
+const APPS_SCRIPT_CODE = `// TRACK & FIELD MANAGER — Google Apps Script
+// Deploy > New Deployment > Web App
 // Execute as: Me | Access: Anyone
-// ============================================
 
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
 function doGet(e) {
-  const action = e.parameter.action;
-  if (action === 'getAll') {
+  if (e.parameter.action === 'getAll') {
     return respond({
       athletes: getData('Roster'),
-      entries: getData('Entries'),
-      activeMeet: getData('ActiveMeet')[0] || {name:'',date:''},
+      meets: getData('Meets'),
+      meetEntries: getData('MeetEntries'),
       events: getData('Events')
     });
   }
@@ -278,10 +315,10 @@ function doPost(e) {
     const body = JSON.parse(e.postData.contents);
     const { action, type, data } = body;
     if (action === 'set') {
-      if (type === 'roster')     setData('Roster', data);
-      if (type === 'entries')    setData('Entries', data);
-      if (type === 'activeMeet') setData('ActiveMeet', [data]);
-      if (type === 'events')     setData('Events', data);
+      if (type === 'roster')      setData('Roster', data);
+      if (type === 'meets')       setData('Meets', data);
+      if (type === 'meetEntries') setData('MeetEntries', data);
+      if (type === 'events')      setData('Events', data);
       return respond({ success: true });
     }
     return respond({ error: 'Unknown action' });
@@ -321,42 +358,55 @@ function respond(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }`;
 
+// ─── DEFAULT EVENTS ───
 const DEFAULT_EVENTS = [
-  {id:'ev1',name:'100m',category:'Sprints'},
-  {id:'ev2',name:'200m',category:'Sprints'},
-  {id:'ev3',name:'400m',category:'Sprints'},
-  {id:'ev4',name:'800m',category:'Distance'},
-  {id:'ev5',name:'1600m',category:'Distance'},
-  {id:'ev6',name:'3200m',category:'Distance'},
-  {id:'ev7',name:'100m Hurdles',category:'Hurdles'},
-  {id:'ev8',name:'110m Hurdles',category:'Hurdles'},
-  {id:'ev9',name:'300m Hurdles',category:'Hurdles'},
-  {id:'ev10',name:'400m Hurdles',category:'Hurdles'},
-  {id:'ev11',name:'4x100 Relay',category:'Relays'},
-  {id:'ev12',name:'4x400 Relay',category:'Relays'},
-  {id:'ev13',name:'Sprint Medley',category:'Relays'},
-  {id:'ev14',name:'High Jump',category:'Jumps'},
-  {id:'ev15',name:'Long Jump',category:'Jumps'},
-  {id:'ev16',name:'Triple Jump',category:'Jumps'},
-  {id:'ev17',name:'Pole Vault',category:'Jumps'},
-  {id:'ev18',name:'Shot Put',category:'Throws'},
-  {id:'ev19',name:'Discus',category:'Throws'},
-  {id:'ev20',name:'Javelin',category:'Throws'},
-  {id:'ev21',name:'Hammer',category:'Throws'},
+  {id:'ev1',name:'100m',category:'Sprints',type:'sprint'},
+  {id:'ev2',name:'200m',category:'Sprints',type:'sprint'},
+  {id:'ev3',name:'400m',category:'Sprints',type:'sprint'},
+  {id:'ev4',name:'800m',category:'Distance',type:'distance'},
+  {id:'ev5',name:'1600m',category:'Distance',type:'distance'},
+  {id:'ev6',name:'3200m',category:'Distance',type:'distance'},
+  {id:'ev7',name:'100m Hurdles',category:'Hurdles',type:'sprint'},
+  {id:'ev8',name:'110m Hurdles',category:'Hurdles',type:'sprint'},
+  {id:'ev9',name:'300m Hurdles',category:'Hurdles',type:'sprint'},
+  {id:'ev10',name:'400m Hurdles',category:'Hurdles',type:'sprint'},
+  {id:'ev11',name:'4x100 Relay',category:'Relays',type:'relay'},
+  {id:'ev12',name:'4x400 Relay',category:'Relays',type:'relay'},
+  {id:'ev13',name:'Sprint Medley',category:'Relays',type:'relay'},
+  {id:'ev14',name:'High Jump',category:'Jumps',type:'field'},
+  {id:'ev15',name:'Long Jump',category:'Jumps',type:'field'},
+  {id:'ev16',name:'Triple Jump',category:'Jumps',type:'field'},
+  {id:'ev17',name:'Pole Vault',category:'Jumps',type:'field'},
+  {id:'ev18',name:'Shot Put',category:'Throws',type:'field'},
+  {id:'ev19',name:'Discus',category:'Throws',type:'field'},
+  {id:'ev20',name:'Javelin',category:'Throws',type:'field'},
+  {id:'ev21',name:'Hammer',category:'Throws',type:'field'},
 ];
 
-let state = {
-  apiUrl:'', teamName:'', demoMode:false,
-  athletes:[], entries:[], activeMeet:{name:'',date:''},
-  events:[...DEFAULT_EVENTS],
-  editingAthleteId:null
+// Distance events that get split times (800m and up)
+const DISTANCE_EVENTS = ['800m','1600m','3200m'];
+// Split labels per event
+const SPLIT_LABELS = {
+  '800m':['400m split','Finish'],
+  '1600m':['400m','800m','1200m','Finish'],
+  '3200m':['800m','1600m','2400m','Finish'],
 };
 
+// ─── STATE ───
+let state = {
+  apiUrl:'', teamName:'', demoMode:false,
+  athletes:[], meets:[], meetEntries:[],
+  events:[...DEFAULT_EVENTS],
+  editingAthleteId:null,
+  activeMeetId:null,
+  activeMeetGender:'M'
+};
+
+// ─── SETUP ───
 function toggleInstructions(){
   const el=document.getElementById('instructions');
   el.style.display=el.style.display==='none'?'block':'none';
 }
-
 function connectApp(){
   const url=document.getElementById('api-url').value.trim();
   const team=document.getElementById('team-name').value.trim();
@@ -366,41 +416,32 @@ function connectApp(){
   localStorage.setItem('tf_team',state.teamName);
   launchApp(); syncAll();
 }
-
 function launchDemo(){
   state.demoMode=true; state.teamName='Demo Team';
   state.athletes=[
-    {id:'1',name:'Jordan Smith',gender:'M',grade:'11',age:'17',events:'100m, 200m'},
-    {id:'2',name:'Taylor Reed',gender:'F',grade:'10',age:'16',events:'Long Jump, 200m'},
-    {id:'3',name:'Alex Chen',gender:'M',grade:'12',age:'18',events:'800m, 1600m'},
-    {id:'4',name:'Morgan Davis',gender:'F',grade:'11',age:'17',events:'Shot Put, Discus'},
+    {id:'a1',name:'Jordan Smith',gender:'M',grade:'11',age:'17'},
+    {id:'a2',name:'Marcus Lee',gender:'M',grade:'10',age:'16'},
+    {id:'a3',name:'Tyler Brown',gender:'M',grade:'12',age:'18'},
+    {id:'a4',name:'Ryan Jones',gender:'M',grade:'11',age:'17'},
+    {id:'a5',name:'Taylor Reed',gender:'F',grade:'10',age:'16'},
+    {id:'a6',name:'Morgan Davis',gender:'F',grade:'11',age:'17'},
+    {id:'a7',name:'Alex Chen',gender:'F',grade:'12',age:'18'},
+    {id:'a8',name:'Jamie Wilson',gender:'F',grade:'10',age:'16'},
   ];
-  state.entries=[
-    {id:'e1',athleteId:'1',athleteName:'Jordan Smith',meet:'County Invitational',date:'2025-04-10',event:'100m',result:'11.23',place:'2',notes:'PR'},
-    {id:'e2',athleteId:'2',athleteName:'Taylor Reed',meet:'County Invitational',date:'2025-04-10',event:'Long Jump',result:"17'4\"",place:'1',notes:''},
-    {id:'e3',athleteId:'3',athleteName:'Alex Chen',meet:'County Invitational',date:'2025-04-10',event:'1600m',result:'4:42.1',place:'3',notes:''},
-    {id:'e4',athleteId:'4',athleteName:'Morgan Davis',meet:'County Invitational',date:'2025-04-10',event:'Shot Put',result:"38'7\"",place:'1',notes:'Season best'},
-  ];
-  state.activeMeet={name:'County Invitational',date:'2025-04-10'};
+  state.meets=[{id:'m1',name:'County Invitational',date:'2025-04-10',location:'Memorial Stadium'}];
+  state.meetEntries=[];
   launchApp();
 }
-
 function launchApp(){
   document.getElementById('setup-screen').style.display='none';
-  const app=document.getElementById('app'); app.style.display='flex';
+  document.getElementById('app').style.display='flex';
   document.getElementById('team-display').textContent=state.teamName;
-  if(state.activeMeet.name){
-    document.getElementById('meet-name-input').value=state.activeMeet.name;
-    document.getElementById('meet-date-input').value=state.activeMeet.date;
-    document.getElementById('active-meet-label').textContent=state.activeMeet.name.toUpperCase();
-  }
-  renderAll();
   document.getElementById('script-code').textContent=APPS_SCRIPT_CODE;
+  renderAll();
 }
+function renderAll(){ renderRoster(); renderMeets(); renderRecords(); renderEventsList(); }
 
-function renderAll(){ renderRoster(); renderMeetEntries(); renderRecords(); renderEventsList(); }
-
-/* ── ROSTER ── */
+// ─── ROSTER ───
 function renderRoster(){
   const list=document.getElementById('athlete-list');
   document.getElementById('roster-count').textContent=`(${state.athletes.length})`;
@@ -411,7 +452,7 @@ function renderRoster(){
     <div class="athlete-card">
       <div class="athlete-info">
         <div class="athlete-name">${a.name}<span class="badge badge-${a.gender.toLowerCase()}">${a.gender}</span></div>
-        <div class="athlete-meta"><span>Gr.${a.grade}</span><span>Age ${a.age}</span><span style="color:var(--gold)">${a.events||'—'}</span></div>
+        <div class="athlete-meta"><span>Gr.${a.grade}</span><span>Age ${a.age}</span></div>
       </div>
       <div class="card-actions">
         <button class="btn-icon" onclick="editAthlete('${a.id}')">✏️</button>
@@ -419,111 +460,6 @@ function renderRoster(){
       </div>
     </div>`).join('');
 }
-
-/* ── MEET ── */
-function renderMeetEntries(){
-  const list=document.getElementById('meet-entries-list');
-  const meetEntries=state.activeMeet.name?state.entries.filter(e=>e.meet===state.activeMeet.name):state.entries;
-  if(!meetEntries.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>No entries for this meet.<br>Tap + ENTRY to log results.</p></div>`;return;
-  }
-  list.innerHTML=`<table class="entries-table"><thead><tr><th>ATHLETE</th><th>EVENT</th><th>RESULT</th><th>PL</th><th></th></tr></thead><tbody>
-  ${meetEntries.map(e=>`<tr>
-    <td><strong style="font-family:'Barlow Condensed';font-size:16px;">${e.athleteName}</strong>${e.notes?`<br><span style="font-size:11px;color:var(--green)">${e.notes}</span>`:''}</td>
-    <td style="color:var(--muted);font-size:12px;">${e.event}</td>
-    <td class="result-badge">${e.result}</td>
-    <td style="color:var(--muted);">${e.place?'#'+e.place:'—'}</td>
-    <td><button class="btn-icon" onclick="deleteEntry('${e.id}')">🗑️</button></td>
-  </tr>`).join('')}
-  </tbody></table>`;
-}
-
-/* ── RECORDS ── */
-let recordsGenderFilter='all', recordsEventFilter='all';
-function renderRecords(){
-  const list=document.getElementById('records-list');
-  let entries=[...state.entries];
-  if(recordsGenderFilter==='M') entries=entries.filter(e=>{const a=state.athletes.find(a=>a.id===e.athleteId);return a&&a.gender==='M';});
-  if(recordsGenderFilter==='F') entries=entries.filter(e=>{const a=state.athletes.find(a=>a.id===e.athleteId);return a&&a.gender==='F';});
-  const allEvents=[...new Set(state.entries.map(e=>e.event))].sort();
-  const evBar=document.getElementById('filter-event-bar');
-  if(allEvents.length){
-    evBar.innerHTML=`<button class="filter-pill ${recordsEventFilter==='all'?'active':''}" onclick="filterEvent('all',this)">ALL EVENTS</button>`
-      +allEvents.map(ev=>`<button class="filter-pill ${recordsEventFilter===ev?'active':''}" onclick="filterEvent(${JSON.stringify(ev)},this)">${ev}</button>`).join('');
-  }
-  if(recordsEventFilter!=='all') entries=entries.filter(e=>e.event===recordsEventFilter);
-  if(!entries.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏆</div><p>No records yet.<br>Log meet results to build the master sheet.</p></div>`;return;
-  }
-  entries.sort((a,b)=>a.event.localeCompare(b.event)||a.athleteName.localeCompare(b.athleteName));
-  list.innerHTML=entries.map(e=>`
-    <div class="record-row">
-      <div><div class="record-athlete">${e.athleteName}</div><div class="record-event">${e.event}${e.notes?' · '+e.notes:''}</div></div>
-      <div><div class="record-result">${e.result}</div><div class="record-meet">${e.meet}</div></div>
-    </div>`).join('');
-}
-function filterRecords(type,btn){
-  recordsGenderFilter=type;
-  document.querySelectorAll('.filter-bar:first-of-type .filter-pill').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active'); renderRecords();
-}
-function filterEvent(ev,btn){ recordsEventFilter=ev; renderRecords(); }
-
-/* ── EVENTS LIST ── */
-function renderEventsList(){
-  const list=document.getElementById('events-list');
-  document.getElementById('events-count').textContent=`(${state.events.length})`;
-  if(!state.events.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏅</div><p>No events yet. Add one above.</p></div>`;return;
-  }
-  // group by category
-  const cats={};
-  state.events.forEach(ev=>{
-    if(!cats[ev.category]) cats[ev.category]=[];
-    cats[ev.category].push(ev);
-  });
-  const catOrder=['Sprints','Distance','Hurdles','Relays','Jumps','Throws','Combined','Other'];
-  const sorted=catOrder.filter(c=>cats[c]).concat(Object.keys(cats).filter(c=>!catOrder.includes(c)));
-  list.innerHTML=sorted.map(cat=>`
-    <div class="event-category-header">${cat}</div>
-    ${cats[cat].map(ev=>`
-      <div class="event-item">
-        <div><div class="event-name">${ev.name}</div></div>
-        <button class="btn-icon" onclick="deleteEvent('${ev.id}')">🗑️</button>
-      </div>`).join('')}
-  `).join('');
-}
-
-function addEvent(){
-  const name=document.getElementById('new-event-name').value.trim();
-  const category=document.getElementById('new-event-cat').value;
-  if(!name){showToast('Enter an event name',true);return;}
-  if(state.events.find(e=>e.name.toLowerCase()===name.toLowerCase())){showToast('Event already exists',true);return;}
-  const ev={id:'ev'+Date.now(),name,category};
-  state.events.push(ev);
-  document.getElementById('new-event-name').value='';
-  renderEventsList();
-  if(!state.demoMode) pushData('events',state.events);
-  showToast(`${name} added ✓`);
-}
-
-function deleteEvent(id){
-  const ev=state.events.find(e=>e.id===id);
-  if(!confirm(`Remove "${ev.name}" from events?`)) return;
-  state.events=state.events.filter(e=>e.id!==id);
-  renderEventsList();
-  if(!state.demoMode) pushData('events',state.events);
-  showToast('Event removed');
-}
-
-/* ── TABS ── */
-function switchTab(tab,btn){
-  ['roster','meet','records','events','script'].forEach(t=>document.getElementById(`tab-${t}`).style.display=t===tab?'block':'none');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-/* ── ATHLETE CRUD ── */
 function openAthleteModal(id){
   state.editingAthleteId=id||null;
   document.getElementById('athlete-modal-title').textContent=id?'EDIT ATHLETE':'ADD ATHLETE';
@@ -533,23 +469,21 @@ function openAthleteModal(id){
     document.getElementById('ath-gender').value=a.gender;
     document.getElementById('ath-grade').value=a.grade;
     document.getElementById('ath-age').value=a.age;
-    document.getElementById('ath-events').value=a.events;
   } else {
-    ['ath-name','ath-age','ath-events'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ath-name').value='';
+    document.getElementById('ath-age').value='';
   }
   document.getElementById('athlete-modal').style.display='flex';
 }
 function editAthlete(id){openAthleteModal(id);}
-
 function saveAthlete(){
   const name=document.getElementById('ath-name').value.trim();
   if(!name){showToast('Name required',true);return;}
   const athlete={
-    id:state.editingAthleteId||Date.now().toString(),
-    name, gender:document.getElementById('ath-gender').value,
+    id:state.editingAthleteId||'a'+Date.now(),
+    name,gender:document.getElementById('ath-gender').value,
     grade:document.getElementById('ath-grade').value,
-    age:document.getElementById('ath-age').value,
-    events:document.getElementById('ath-events').value.trim()
+    age:document.getElementById('ath-age').value
   };
   if(state.editingAthleteId) state.athletes=state.athletes.map(a=>a.id===state.editingAthleteId?athlete:a);
   else state.athletes.push(athlete);
@@ -557,72 +491,425 @@ function saveAthlete(){
   if(!state.demoMode) pushData('roster',state.athletes);
   showToast(state.editingAthleteId?'Athlete updated ✓':'Athlete added ✓');
 }
-
 function deleteAthlete(id){
-  if(!confirm('Remove this athlete from the roster?')) return;
+  if(!confirm('Remove this athlete?')) return;
   state.athletes=state.athletes.filter(a=>a.id!==id); renderAll();
   if(!state.demoMode) pushData('roster',state.athletes);
-  showToast('Athlete removed');
+  showToast('Removed');
 }
 
-/* ── MEET ENTRIES ── */
-function setActiveMeet(){
-  const name=document.getElementById('meet-name-input').value.trim();
-  const date=document.getElementById('meet-date-input').value;
-  if(!name){showToast('Enter a meet name',true);return;}
-  state.activeMeet={name,date};
-  document.getElementById('active-meet-label').textContent=name.toUpperCase();
-  renderMeetEntries();
-  if(!state.demoMode) pushData('activeMeet',state.activeMeet);
-  showToast(`Active: ${name}`);
+// ─── MEETS LIST ───
+function renderMeets(){
+  const list=document.getElementById('meets-list');
+  if(!state.meets.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏟️</div><p>No meets yet.<br>Tap + NEW MEET to create one.</p></div>`;return;
+  }
+  list.innerHTML=state.meets.map(m=>{
+    const entryCount=state.meetEntries.filter(e=>e.meetId===m.id).length;
+    return `<div class="meet-list-item" onclick="openMeetSheet('${m.id}')">
+      <div>
+        <div class="meet-item-name">${m.name}</div>
+        <div class="meet-item-date">${m.date||'No date set'}${m.location?' · '+m.location:''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="meet-item-count">${entryCount} entries</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">▶ Open</div>
+      </div>
+    </div>`;
+  }).join('');
 }
-
-function openEntryModal(){
-  if(!state.activeMeet.name){showToast('Set a meet first',true);return;}
-  if(!state.athletes.length){showToast('Add athletes first',true);return;}
-  // populate athletes
-  const sel=document.getElementById('entry-athlete');
-  sel.innerHTML=state.athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
-  // populate events dynamically from state.events grouped by category
-  const evSel=document.getElementById('entry-event');
-  const cats={};
-  state.events.forEach(ev=>{
-    if(!cats[ev.category]) cats[ev.category]=[];
-    cats[ev.category].push(ev);
-  });
-  const catOrder=['Sprints','Distance','Hurdles','Relays','Jumps','Throws','Combined','Other'];
-  const sorted=catOrder.filter(c=>cats[c]).concat(Object.keys(cats).filter(c=>!catOrder.includes(c)));
-  evSel.innerHTML=sorted.map(cat=>
-    `<optgroup label="${cat}">${cats[cat].map(ev=>`<option>${ev.name}</option>`).join('')}</optgroup>`
-  ).join('');
-  ['entry-result','entry-place','entry-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('entry-modal').style.display='flex';
+function openNewMeetModal(){
+  document.getElementById('nm-name').value='';
+  document.getElementById('nm-date').value='';
+  document.getElementById('nm-location').value='';
+  document.getElementById('new-meet-modal').style.display='flex';
 }
-
-function saveEntry(){
-  const athId=document.getElementById('entry-athlete').value;
-  const athlete=state.athletes.find(a=>a.id===athId);
-  const result=document.getElementById('entry-result').value.trim();
-  if(!result){showToast('Result required',true);return;}
-  const entry={
-    id:Date.now().toString(), athleteId:athId, athleteName:athlete.name,
-    meet:state.activeMeet.name, date:state.activeMeet.date,
-    event:document.getElementById('entry-event').value,
-    result, place:document.getElementById('entry-place').value,
-    notes:document.getElementById('entry-notes').value.trim()
+function createMeet(){
+  const name=document.getElementById('nm-name').value.trim();
+  if(!name){showToast('Meet name required',true);return;}
+  const meet={
+    id:'m'+Date.now(),
+    name,
+    date:document.getElementById('nm-date').value,
+    location:document.getElementById('nm-location').value.trim()
   };
-  state.entries.push(entry); closeModal('entry-modal'); renderAll();
-  if(!state.demoMode) pushData('entries',state.entries);
-  showToast('Result logged ✓');
+  state.meets.push(meet);
+  closeModal('new-meet-modal');
+  renderMeets();
+  if(!state.demoMode) pushData('meets',state.meets);
+  showToast(`${name} created ✓`);
+  openMeetSheet(meet.id);
 }
 
-function deleteEntry(id){
-  state.entries=state.entries.filter(e=>e.id!==id); renderAll();
-  if(!state.demoMode) pushData('entries',state.entries);
-  showToast('Entry removed');
+// ─── MEET SHEET ───
+function openMeetSheet(meetId){
+  state.activeMeetId=meetId;
+  state.activeMeetGender='M';
+  const meet=state.meets.find(m=>m.id===meetId);
+  document.getElementById('ms-title').textContent=meet.name.toUpperCase();
+  document.getElementById('ms-subtitle').textContent=(meet.date||'')+(meet.location?' · '+meet.location:'');
+  document.querySelectorAll('.gender-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.gender-tab.boys').classList.add('active');
+  renderMeetSheetBody();
+  document.getElementById('meet-sheet').style.display='flex';
+}
+function closeMeetSheet(){
+  document.getElementById('meet-sheet').style.display='none';
+  renderMeets();
+  renderRecords();
+}
+function switchGenderTab(gender,btn){
+  state.activeMeetGender=gender;
+  document.querySelectorAll('.gender-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMeetSheetBody();
 }
 
-/* ── SYNC ── */
+function renderMeetSheetBody(){
+  const body=document.getElementById('meet-sheet-body');
+  const gender=state.activeMeetGender;
+  const athletes=state.athletes.filter(a=>a.gender===gender);
+  const meetId=state.activeMeetId;
+
+  if(!athletes.length){
+    body.innerHTML=`<div class="empty-state"><div class="empty-icon">${gender==='M'?'♂':'♀'}</div><p>No ${gender==='M'?'male':'female'} athletes on roster yet.</p></div>`;
+    return;
+  }
+
+  // athlete options for this gender
+  const athOptions=`<option value="">— Select athlete —</option>`+athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+
+  body.innerHTML=state.events.map(ev=>{
+    const evKey=`${meetId}_${gender}_${ev.id}`;
+    const existing=state.meetEntries.filter(e=>e.meetId===meetId&&e.gender===gender&&e.eventId===ev.id);
+    return buildEventBlock(ev, evKey, athOptions, existing);
+  }).join('');
+}
+
+function buildEventBlock(ev, evKey, athOptions, existing){
+  const isRelay=ev.type==='relay';
+  const isDistance=DISTANCE_EVENTS.includes(ev.name)||ev.type==='distance';
+  let bodyHtml='';
+
+  if(isRelay){
+    // 4 runners + 2 alts
+    const runners=['Runner 1','Runner 2','Runner 3','Runner 4'];
+    const alts=['Alternate 1','Alternate 2'];
+    const relayEntry=existing[0]||{};
+    const relayTotal=relayEntry.result||'';
+
+    bodyHtml+=runners.map((label,i)=>{
+      const selVal=relayEntry[`r${i}`]||'';
+      const split=relayEntry[`split${i}`]||'';
+      return `<div class="athlete-slot">
+        <div class="slot-label">${label}</div>
+        <div class="slot-row">
+          <select onchange="updateRelayCalc('${evKey}')" id="${evKey}_r${i}">
+            ${athOptions.replace(`value="${selVal}"`,`value="${selVal}" selected`)}
+          </select>
+          <input class="split-input" style="width:90px;" type="text" placeholder="Split" id="${evKey}_split${i}" value="${split}" oninput="calcRelayTotal('${evKey}')" />
+        </div>
+      </div>`;
+    }).join('');
+
+    bodyHtml+=`<div class="relay-divider"></div><div class="relay-alt-label">ALTERNATES</div>`;
+    bodyHtml+=alts.map((label,i)=>{
+      const selVal=relayEntry[`alt${i}`]||'';
+      return `<div class="athlete-slot">
+        <div class="slot-label alt">${label}</div>
+        <div class="slot-row">
+          <select id="${evKey}_alt${i}">
+            ${athOptions.replace(`value="${selVal}"`,`value="${selVal}" selected`)}
+          </select>
+        </div>
+      </div>`;
+    }).join('');
+
+    bodyHtml+=`<div class="total-row">
+      <span class="total-label">RELAY TOTAL:</span>
+      <span class="total-value" id="${evKey}_relaytotal">${relayTotal}</span>
+    </div>`;
+
+  } else {
+    // individual entries — can have multiple athletes per event
+    // show existing + 1 empty slot
+    const slots=[...existing,{id:'new_'+Date.now(),athleteId:'',result:'',splits:{}}];
+    bodyHtml+=slots.map((entry,i)=>{
+      const slotKey=`${evKey}_slot${i}`;
+      if(isDistance){
+        const labels=SPLIT_LABELS[ev.name]||['Finish'];
+        const splitsObj=entry.splits||{};
+        const splitsHtml=labels.map((lbl,si)=>{
+          const val=splitsObj[si]||'';
+          return `<div class="split-row">
+            <span class="split-label">${lbl}</span>
+            <input class="split-input" type="text" placeholder="0:00.0" id="${slotKey}_sp${si}" value="${val}" oninput="calcDistTotal('${slotKey}','${ev.name}')"/>
+          </div>`;
+        }).join('');
+        const total=entry.result||'';
+        return `<div class="athlete-slot">
+          <div class="slot-row"><select id="${slotKey}_ath">${athOptions.replace(`value="${entry.athleteId}"`,`value="${entry.athleteId}" selected`)}</select></div>
+          <div class="split-grid">${splitsHtml}</div>
+          <div class="total-row"><span class="total-label">FINISH TIME:</span><span class="total-value" id="${slotKey}_total">${total}</span></div>
+        </div>`;
+      } else {
+        // sprint / field
+        const result=entry.result||'';
+        return `<div class="athlete-slot">
+          <div class="slot-row">
+            <select id="${slotKey}_ath">${athOptions.replace(`value="${entry.athleteId}"`,`value="${entry.athleteId}" selected`)}</select>
+            <input class="split-input" style="width:100px;" type="text" placeholder="Result" id="${slotKey}_res" value="${result}"/>
+          </div>
+        </div>`;
+      }
+    }).join('');
+    bodyHtml+=`<button onclick="addAthleteSlot('${evKey}','${ev.id}')" style="background:transparent;border:1px dashed var(--border);color:var(--muted);border-radius:8px;padding:8px;width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;margin-top:4px;">+ ADD ANOTHER ATHLETE</button>`;
+  }
+
+  const entryCount=existing.filter(e=>e.athleteId).length;
+  return `<div class="event-block" id="block_${evKey}">
+    <div class="event-block-header" onclick="toggleBlock('block_${evKey}')">
+      <div>
+        <div class="event-block-name">${ev.name}</div>
+        <div class="event-block-meta">${ev.category}${entryCount?' · '+entryCount+' entered':''}</div>
+      </div>
+      <span class="event-chevron">▼</span>
+    </div>
+    <div class="event-block-body">${bodyHtml}</div>
+  </div>`;
+}
+
+function toggleBlock(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+function addAthleteSlot(evKey, evId){
+  // Re-render just that event block with an extra slot
+  // We'll collect current data, add a blank, re-render
+  saveMeetSheetSilent();
+  const meet=state.meets.find(m=>m.id===state.activeMeetId);
+  const gender=state.activeMeetGender;
+  const ev=state.events.find(e=>e.id===evId);
+  const athletes=state.athletes.filter(a=>a.gender===gender);
+  const athOptions=`<option value="">— Select athlete —</option>`+athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+  const existing=state.meetEntries.filter(e=>e.meetId===state.activeMeetId&&e.gender===gender&&e.eventId===evId);
+  const block=document.getElementById(`block_${evKey}`);
+  const wasOpen=block.classList.contains('open');
+  block.outerHTML=buildEventBlock(ev,evKey,athOptions,[...existing,{id:'new_'+Date.now(),athleteId:'',result:'',splits:{}}]);
+  const newBlock=document.getElementById(`block_${evKey}`);
+  if(wasOpen) newBlock.classList.add('open');
+}
+
+// ─── SPLIT CALCULATIONS ───
+function calcDistTotal(slotKey, evName){
+  const labels=SPLIT_LABELS[evName]||['Finish'];
+  const lastIdx=labels.length-1;
+  const finishVal=document.getElementById(`${slotKey}_sp${lastIdx}`)?.value?.trim();
+  const totalEl=document.getElementById(`${slotKey}_total`);
+  if(totalEl) totalEl.textContent=finishVal||'';
+}
+
+function calcRelayTotal(evKey){
+  let totalMs=0; let allValid=true;
+  for(let i=0;i<4;i++){
+    const val=document.getElementById(`${evKey}_split${i}`)?.value?.trim();
+    if(!val){allValid=false;break;}
+    const ms=parseTimeToMs(val);
+    if(ms===null){allValid=false;break;}
+    totalMs+=ms;
+  }
+  const el=document.getElementById(`${evKey}_relaytotal`);
+  if(el) el.textContent=allValid?formatMs(totalMs):'';
+}
+
+function parseTimeToMs(str){
+  str=str.trim();
+  // formats: ss.ms  m:ss.ms  h:mm:ss.ms
+  const parts=str.split(':');
+  try{
+    if(parts.length===1){
+      return Math.round(parseFloat(parts[0])*1000);
+    } else if(parts.length===2){
+      return (parseInt(parts[0])*60+parseFloat(parts[1]))*1000;
+    } else if(parts.length===3){
+      return (parseInt(parts[0])*3600+parseInt(parts[1])*60+parseFloat(parts[2]))*1000;
+    }
+  }catch(e){}
+  return null;
+}
+
+function formatMs(ms){
+  const totalSec=ms/1000;
+  if(totalSec<60) return totalSec.toFixed(2);
+  const min=Math.floor(totalSec/60);
+  const sec=(totalSec%60).toFixed(2).padStart(5,'0');
+  return `${min}:${sec}`;
+}
+
+// ─── SAVE MEET SHEET ───
+function saveMeetSheetSilent(){
+  const meetId=state.activeMeetId;
+  const gender=state.activeMeetGender;
+  // Remove old entries for this meet+gender
+  state.meetEntries=state.meetEntries.filter(e=>!(e.meetId===meetId&&e.gender===gender));
+
+  state.events.forEach(ev=>{
+    const evKey=`${meetId}_${gender}_${ev.id}`;
+    if(ev.type==='relay'){
+      const entry={meetId,gender,eventId:ev.id,eventName:ev.name,type:'relay'};
+      let hasData=false;
+      for(let i=0;i<4;i++){
+        const athEl=document.getElementById(`${evKey}_r${i}`);
+        const splitEl=document.getElementById(`${evKey}_split${i}`);
+        if(athEl){entry[`r${i}`]=athEl.value; if(athEl.value) hasData=true;}
+        if(splitEl){entry[`split${i}`]=splitEl.value;}
+      }
+      for(let i=0;i<2;i++){
+        const altEl=document.getElementById(`${evKey}_alt${i}`);
+        if(altEl) entry[`alt${i}`]=altEl.value;
+      }
+      const totalEl=document.getElementById(`${evKey}_relaytotal`);
+      entry.result=totalEl?totalEl.textContent:'';
+      const r0Ath=state.athletes.find(a=>a.id===entry['r0']);
+      entry.athleteId=entry['r0']||'';
+      entry.athleteName=r0Ath?r0Ath.name:'Relay';
+      if(hasData) state.meetEntries.push({id:'me'+Date.now()+Math.random(),...entry});
+    } else {
+      // collect slots
+      let i=0;
+      while(true){
+        const slotKey=`${evKey}_slot${i}`;
+        const athEl=document.getElementById(`${slotKey}_ath`);
+        if(!athEl) break;
+        const athId=athEl.value;
+        if(athId){
+          const ath=state.athletes.find(a=>a.id===athId);
+          let result='';
+          const isDistance=DISTANCE_EVENTS.includes(ev.name)||ev.type==='distance';
+          if(isDistance){
+            const labels=SPLIT_LABELS[ev.name]||['Finish'];
+            const splits={};
+            labels.forEach((_,si)=>{
+              const spEl=document.getElementById(`${slotKey}_sp${si}`);
+              if(spEl) splits[si]=spEl.value;
+            });
+            const totalEl=document.getElementById(`${slotKey}_total`);
+            result=totalEl?totalEl.textContent:'';
+            const lastSplit=splits[labels.length-1];
+            if(!result&&lastSplit) result=lastSplit;
+            state.meetEntries.push({
+              id:'me'+Date.now()+Math.random(),
+              meetId,gender,eventId:ev.id,eventName:ev.name,
+              type:'distance',athleteId:athId,
+              athleteName:ath?ath.name:'',
+              result,splits:JSON.stringify(splits)
+            });
+          } else {
+            const resEl=document.getElementById(`${slotKey}_res`);
+            result=resEl?resEl.value:'';
+            state.meetEntries.push({
+              id:'me'+Date.now()+Math.random(),
+              meetId,gender,eventId:ev.id,eventName:ev.name,
+              type:ev.type,athleteId:athId,
+              athleteName:ath?ath.name:'',
+              result,splits:''
+            });
+          }
+        }
+        i++;
+      }
+    }
+  });
+}
+
+function saveMeetSheet(){
+  saveMeetSheetSilent();
+  if(!state.demoMode) pushData('meetEntries',state.meetEntries);
+  showToast('Meet saved ✓');
+  renderMeets();
+  renderRecords();
+}
+
+// ─── RECORDS ───
+let recordsGenderFilter='all', recordsEventFilter='all';
+function renderRecords(){
+  const list=document.getElementById('records-list');
+  let entries=[...state.meetEntries];
+  const meetMap={};
+  state.meets.forEach(m=>meetMap[m.id]=m.name);
+
+  if(recordsGenderFilter==='M') entries=entries.filter(e=>e.gender==='M');
+  if(recordsGenderFilter==='F') entries=entries.filter(e=>e.gender==='F');
+
+  const allEvents=[...new Set(state.meetEntries.map(e=>e.eventName))].sort();
+  const evBar=document.getElementById('filter-event-bar');
+  evBar.innerHTML=allEvents.length?
+    `<button class="filter-pill ${recordsEventFilter==='all'?'active':''}" onclick="filterEvent('all',this)">ALL</button>`
+    +allEvents.map(ev=>`<button class="filter-pill ${recordsEventFilter===ev?'active':''}" onclick="filterEvent(${JSON.stringify(ev)},this)">${ev}</button>`).join('')
+    :'';
+
+  if(recordsEventFilter!=='all') entries=entries.filter(e=>e.eventName===recordsEventFilter);
+  entries=entries.filter(e=>e.athleteId&&e.result);
+
+  if(!entries.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏆</div><p>No records yet.<br>Log meet results to build the master sheet.</p></div>`;return;
+  }
+  entries.sort((a,b)=>a.eventName.localeCompare(b.eventName)||a.athleteName.localeCompare(b.athleteName));
+  list.innerHTML=entries.map(e=>`
+    <div class="record-row">
+      <div><div class="record-athlete">${e.athleteName}</div><div class="record-event">${e.eventName}</div></div>
+      <div><div class="record-result">${e.result}</div><div class="record-meet">${meetMap[e.meetId]||e.meetId}</div></div>
+    </div>`).join('');
+}
+function filterRecords(type,btn){
+  recordsGenderFilter=type;
+  document.querySelectorAll('#tab-records .filter-bar:first-of-type .filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active'); renderRecords();
+}
+function filterEvent(ev,btn){ recordsEventFilter=ev; renderRecords(); }
+
+// ─── EVENTS ───
+function renderEventsList(){
+  const list=document.getElementById('events-list');
+  document.getElementById('events-count').textContent=`(${state.events.length})`;
+  if(!state.events.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏅</div><p>No events.</p></div>`;return;}
+  const cats={};
+  state.events.forEach(ev=>{if(!cats[ev.category])cats[ev.category]=[];cats[ev.category].push(ev);});
+  const order=['Sprints','Distance','Hurdles','Relays','Jumps','Throws','Combined','Other'];
+  const sorted=order.filter(c=>cats[c]).concat(Object.keys(cats).filter(c=>!order.includes(c)));
+  list.innerHTML=sorted.map(cat=>`
+    <div class="event-cat-header">${cat}</div>
+    ${cats[cat].map(ev=>`
+      <div class="event-item">
+        <div><div class="event-name-text">${ev.name}</div><div class="event-cat-text">${ev.type}</div></div>
+        <button class="btn-icon" onclick="deleteEvent('${ev.id}')">🗑️</button>
+      </div>`).join('')}
+  `).join('');
+}
+function addEvent(){
+  const name=document.getElementById('new-event-name').value.trim();
+  const cat=document.getElementById('new-event-cat').value;
+  if(!name){showToast('Enter an event name',true);return;}
+  if(state.events.find(e=>e.name.toLowerCase()===name.toLowerCase())){showToast('Already exists',true);return;}
+  const isRelay=name.toLowerCase().includes('relay')||name.toLowerCase().includes('medley');
+  const isDist=cat==='Distance';
+  const type=isRelay?'relay':isDist?'distance':cat==='Jumps'||cat==='Throws'||cat==='Combined'?'field':'sprint';
+  state.events.push({id:'ev'+Date.now(),name,category:cat,type});
+  document.getElementById('new-event-name').value='';
+  renderEventsList();
+  if(!state.demoMode) pushData('events',state.events);
+  showToast(`${name} added ✓`);
+}
+function deleteEvent(id){
+  const ev=state.events.find(e=>e.id===id);
+  if(!confirm(`Remove "${ev.name}"?`)) return;
+  state.events=state.events.filter(e=>e.id!==id);
+  renderEventsList();
+  if(!state.demoMode) pushData('events',state.events);
+  showToast('Event removed');
+}
+
+// ─── SYNC ───
 async function syncAll(){
   if(state.demoMode){showToast('Demo mode — no sync');return;}
   const btn=document.getElementById('sync-btn');
@@ -632,21 +919,15 @@ async function syncAll(){
     const res=await fetch(`${state.apiUrl}?action=getAll`);
     const data=await res.json();
     if(data.athletes) state.athletes=data.athletes;
-    if(data.entries) state.entries=data.entries;
-    if(data.activeMeet&&data.activeMeet.name) state.activeMeet=data.activeMeet;
+    if(data.meets) state.meets=data.meets;
+    if(data.meetEntries) state.meetEntries=data.meetEntries;
     if(data.events&&data.events.length) state.events=data.events;
     renderAll();
-    if(state.activeMeet.name){
-      document.getElementById('meet-name-input').value=state.activeMeet.name;
-      document.getElementById('meet-date-input').value=state.activeMeet.date;
-      document.getElementById('active-meet-label').textContent=state.activeMeet.name.toUpperCase();
-    }
     document.getElementById('last-sync').textContent='Synced '+new Date().toLocaleTimeString();
     setStatus('Connected',true); showToast('Synced ✓');
   }catch(e){setStatus('Offline',false);showToast('Sync failed — check URL',true);}
   btn.classList.remove('syncing'); btn.textContent='↻ SYNC';
 }
-
 async function pushData(type,data){
   if(state.demoMode) return;
   try{
@@ -655,11 +936,14 @@ async function pushData(type,data){
   }catch(e){showToast('Save failed',true);}
 }
 
-function copyScript(){
-  if(navigator.clipboard) navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>showToast('Script copied ✓'));
-  else{const ta=document.createElement('textarea');ta.value=APPS_SCRIPT_CODE;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Script copied ✓');}
+// ─── TABS ───
+function switchTab(tab,btn){
+  ['roster','meets','records','events','script'].forEach(t=>document.getElementById(`tab-${t}`).style.display=t===tab?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
+// ─── UTILS ───
 function closeModal(id){document.getElementById(id).style.display='none';}
 function showToast(msg,error=false){
   const t=document.getElementById('toast');
@@ -669,6 +953,10 @@ function showToast(msg,error=false){
 function setStatus(msg,online){
   document.getElementById('status-text').textContent=msg;
   document.getElementById('status-dot').className='status-dot'+(online?'':' offline');
+}
+function copyScript(){
+  if(navigator.clipboard) navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>showToast('Script copied ✓'));
+  else{const ta=document.createElement('textarea');ta.value=APPS_SCRIPT_CODE;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Script copied ✓');}
 }
 
 window.onload=()=>{
