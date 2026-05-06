@@ -145,6 +145,20 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.error{background:var(--red);color:white;}
 pre#script-code{background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:monospace;font-size:11px;color:#aaa;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin-bottom:12px;}
+/* EVENT COUNTER PANEL */
+.event-counter-panel{background:var(--mid);border-bottom:1px solid var(--border);padding:8px 12px;flex-shrink:0;}
+.event-counter-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.event-counter-grid{display:flex;flex-wrap:wrap;gap:5px;}
+.athlete-counter{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 8px;}
+.athlete-counter.maxed{border-color:var(--red);background:rgba(214,40,40,0.08);}
+.athlete-counter.full{border-color:var(--gold);background:rgba(247,183,49,0.08);}
+.athlete-counter-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
+.athlete-counter-badge{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;padding:1px 6px;border-radius:4px;background:var(--border);color:var(--muted);}
+.athlete-counter.full .athlete-counter-badge{background:rgba(247,183,49,0.2);color:var(--gold);}
+.athlete-counter.maxed .athlete-counter-badge{background:rgba(214,40,40,0.25);color:var(--red);}
+.counter-legend{font-size:10px;color:var(--muted);margin-top:5px;display:flex;gap:10px;}
+.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;}
+.slot-select.disabled-ath{color:var(--muted);}
 </style>
 </head>
 <body>
@@ -293,6 +307,15 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   <div class="gender-tab-bar">
     <button class="gender-tab boys active" onclick="switchGenderTab('M',this)">♂ BOYS</button>
     <button class="gender-tab girls" onclick="switchGenderTab('F',this)">♀ GIRLS</button>
+  </div>
+  <div class="event-counter-panel" id="event-counter-panel">
+    <div class="event-counter-title">EVENT COUNT PER ATHLETE (MAX 4)</div>
+    <div class="event-counter-grid" id="event-counter-grid"></div>
+    <div class="counter-legend">
+      <span><span class="legend-dot" style="background:var(--border);border:1px solid var(--muted);"></span>0–3 events</span>
+      <span><span class="legend-dot" style="background:var(--gold);"></span>4 events (max)</span>
+      <span><span class="legend-dot" style="background:var(--red);"></span>OVER limit</span>
+    </div>
   </div>
   <div class="meet-sheet-body" id="meet-sheet-body"></div>
 </div>
@@ -563,20 +586,76 @@ function renderMeetSheetBody(){
 
   if(!athletes.length){
     body.innerHTML=`<div class="empty-state"><div class="empty-icon">${gender==='M'?'♂':'♀'}</div><p>No ${gender==='M'?'male':'female'} athletes on roster yet.<br>Add athletes in the Roster tab first.</p></div>`;
+    document.getElementById('event-counter-panel').style.display='none';
     return;
   }
 
-  const athOptions=`<option value="">— Select —</option>`+athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+  document.getElementById('event-counter-panel').style.display='block';
+
+  // build event counts from saved state (not DOM — DOM not rendered yet)
+  const eventCounts = buildEventCounts(meetId, gender, null);
+  renderEventCounter(athletes, eventCounts);
+
+  // build athlete options with count annotations and disable if maxed
+  const athOptions = buildAthOptions(athletes, eventCounts, null);
   const sortedEvents=[...state.events].sort((a,b)=>(a.order||99)-(b.order||99));
 
   body.innerHTML=sortedEvents.map((ev,idx)=>{
     const evKey=`${meetId}_${gender}_${ev.id}`;
     const existing=state.meetEntries.filter(e=>e.meetId===meetId&&e.gender===gender&&e.eventId===ev.id);
-    return buildEventBlock(ev, evKey, athOptions, existing, idx+1);
+    // for each slot, build options excluding athletes already at 4 (but keep currently selected)
+    return buildEventBlock(ev, evKey, athletes, eventCounts, existing, idx+1);
   }).join('');
 }
 
-function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
+// ─── EVENT COUNT HELPERS ───
+function buildEventCounts(meetId, gender, domOverride){
+  // Count events per athlete from saved state entries
+  // domOverride: if provided, also scan DOM selects for live unsaved assignments
+  const counts={};
+  state.meetEntries
+    .filter(e=>e.meetId===meetId&&e.gender===gender)
+    .forEach(e=>{
+      const ev=state.events.find(ev=>ev.id===e.eventId);
+      const isRelay=ev&&(ev.type==='relay_sprint'||ev.type==='relay_distance');
+      if(isRelay){
+        // count each runner
+        for(let i=0;i<4;i++){
+          const rid=e[`r${i}`];
+          if(rid){counts[rid]=(counts[rid]||0)+1;}
+        }
+      } else {
+        if(e.athleteId){counts[e.athleteId]=(counts[e.athleteId]||0)+1;}
+      }
+    });
+  return counts;
+}
+
+function renderEventCounter(athletes, eventCounts){
+  const grid=document.getElementById('event-counter-grid');
+  if(!grid) return;
+  grid.innerHTML=athletes.map(a=>{
+    const cnt=eventCounts[a.id]||0;
+    const cls=cnt>4?'athlete-counter maxed':cnt===4?'athlete-counter full':'athlete-counter';
+    const firstName=a.name.split(' ')[0];
+    return `<div class="${cls}" title="${a.name} — ${cnt}/4 events">
+      <span class="athlete-counter-name">${firstName}</span>
+      <span class="athlete-counter-badge">${cnt}/4</span>
+    </div>`;
+  }).join('');
+}
+
+function buildAthOptions(athletes, eventCounts, currentSelId){
+  // Show all athletes; disable those at 4 unless they're the currently selected one
+  return `<option value="">— Select —</option>`+athletes.map(a=>{
+    const cnt=eventCounts[a.id]||0;
+    const isMaxed=cnt>=4&&a.id!==currentSelId;
+    const label=cnt>=4?`${a.name} (${cnt}/4 MAX)`:cnt===3?`${a.name} (3/4)`:a.name;
+    return `<option value="${a.id}"${isMaxed?' disabled':''} ${a.id===currentSelId?' selected':''}>${label}</option>`;
+  }).join('');
+}
+
+function buildEventBlock(ev, evKey, athletes, eventCounts, existing, orderNum){
   const isRelay = ev.type==='relay_sprint'||ev.type==='relay_distance';
   const isField = ev.type==='field';
   const isDistance = ev.type==='distance';
@@ -596,11 +675,11 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
     bodyHtml += splits.map((lbl,i)=>{
       const athVal = relayEntry[`r${i}`]||'';
       const splitVal = relayEntry[`split${i}`]||'';
-      const athSel = athOptions.replace(`value="${athVal}"`,`value="${athVal}" selected`);
+      const athSel = buildAthOptions(athletes, eventCounts, athVal);
       return `<div class="athlete-slot">
         <div class="slot-label">${lbl}</div>
         <div class="slot-row">
-          <select class="slot-select" id="${evKey}_r${i}">${athSel}</select>
+          <select class="slot-select" id="${evKey}_r${i}" onchange="refreshEventCounter()">${athSel}</select>
           <input class="result-input" type="text" placeholder="${ph}" id="${evKey}_split${i}" value="${splitVal}" oninput="calcRelayFromSplits('${evKey}',${splits.length},${isDistRelay})"/>
         </div>
       </div>`;
@@ -628,7 +707,7 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
     bodyHtml += `<div class="relay-divider"></div><div class="relay-section-lbl">ALTERNATES</div>`;
     bodyHtml += [0,1].map(i=>{
       const altVal = relayEntry[`alt${i}`]||'';
-      const altSel = athOptions.replace(`value="${altVal}"`,`value="${altVal}" selected`);
+      const altSel = buildAthOptions(athletes, eventCounts, altVal);
       return `<div class="athlete-slot">
         <div class="slot-label alt-label">Alternate ${i+1}</div>
         <div class="slot-row"><select class="slot-select" id="${evKey}_alt${i}">${altSel}</select></div>
@@ -641,12 +720,12 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
     const allSlots = [...slots, {id:'new_extra',athleteId:'',feet:'',inches:''}];
     bodyHtml += allSlots.map((entry,i)=>{
       const slotKey = `${evKey}_slot${i}`;
-      const athSel = athOptions.replace(`value="${entry.athleteId||''}"`,`value="${entry.athleteId||''}" selected`);
+      const athSel = buildAthOptions(athletes, eventCounts, entry.athleteId||'');
       const ft = entry.feet||'';
       const inn = entry.inches||'';
       return `<div class="athlete-slot">
         <div class="slot-row" style="margin-bottom:6px;">
-          <select class="slot-select" id="${slotKey}_ath">${athSel}</select>
+          <select class="slot-select" id="${slotKey}_ath" onchange="refreshEventCounter()">${athSel}</select>
         </div>
         <div class="field-meas-row">
           <input class="field-meas-inp" type="number" min="0" placeholder="Ft" id="${slotKey}_ft" value="${ft}" oninput="updateFieldDisplay('${slotKey}')"/>
@@ -666,7 +745,7 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
     const splitLabels = ev.splits||['Finish'];
     bodyHtml += allSlots.map((entry,i)=>{
       const slotKey = `${evKey}_slot${i}`;
-      const athSel = athOptions.replace(`value="${entry.athleteId||''}"`,`value="${entry.athleteId||''}" selected`);
+      const athSel = buildAthOptions(athletes, eventCounts, entry.athleteId||'');
       let splitsObj = {};
       try{ splitsObj=JSON.parse(entry.splits||'{}'); }catch(e){}
       const splitsHtml = splitLabels.map((lbl,si)=>`
@@ -677,7 +756,7 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
       const total = entry.result||splitsObj[splitLabels.length-1]||'';
       return `<div class="athlete-slot">
         <div class="slot-row" style="margin-bottom:6px;">
-          <select class="slot-select" id="${slotKey}_ath">${athSel}</select>
+          <select class="slot-select" id="${slotKey}_ath" onchange="refreshEventCounter()">${athSel}</select>
         </div>
         <div class="splits-section">
           <div class="splits-grid">${splitsHtml}</div>
@@ -696,10 +775,10 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
     const allSlots = [...slots, {id:'new_extra',athleteId:'',result:''}];
     bodyHtml += allSlots.map((entry,i)=>{
       const slotKey = `${evKey}_slot${i}`;
-      const athSel = athOptions.replace(`value="${entry.athleteId||''}"`,`value="${entry.athleteId||''}" selected`);
+      const athSel = buildAthOptions(athletes, eventCounts, entry.athleteId||'');
       return `<div class="athlete-slot">
         <div class="slot-row">
-          <select class="slot-select" id="${slotKey}_ath">${athSel}</select>
+          <select class="slot-select" id="${slotKey}_ath" onchange="refreshEventCounter()">${athSel}</select>
           <input class="result-input wide" type="text" placeholder="00.00" id="${slotKey}_res" value="${entry.result||''}"/>
         </div>
       </div>`;
@@ -726,6 +805,60 @@ function buildEventBlock(ev, evKey, athOptions, existing, orderNum){
 }
 
 function toggleBlock(id){ document.getElementById(id).classList.toggle('open'); }
+
+// ─── LIVE COUNTER REFRESH ───
+// Called whenever a select changes in the meet sheet
+function refreshEventCounter(){
+  const meetId=state.activeMeetId;
+  const gender=state.activeMeetGender;
+  const athletes=state.athletes.filter(a=>a.gender===gender);
+  // Build counts from DOM (live, unsaved)
+  const counts={};
+  state.events.forEach(ev=>{
+    const evKey=`${meetId}_${gender}_${ev.id}`;
+    const isRelay=ev.type==='relay_sprint'||ev.type==='relay_distance';
+    if(isRelay){
+      for(let i=0;i<4;i++){
+        const el=document.getElementById(`${evKey}_r${i}`);
+        if(el&&el.value) counts[el.value]=(counts[el.value]||0)+1;
+      }
+    } else {
+      let i=0;
+      while(true){
+        const el=document.getElementById(`${evKey}_slot${i}_ath`);
+        if(!el) break;
+        if(el.value) counts[el.value]=(counts[el.value]||0)+1;
+        i++;
+      }
+    }
+  });
+  renderEventCounter(athletes, counts);
+  // Now update all dropdowns to reflect new maxed status
+  state.events.forEach(ev=>{
+    const evKey=`${meetId}_${gender}_${ev.id}`;
+    const isRelay=ev.type==='relay_sprint'||ev.type==='relay_distance';
+    if(isRelay){
+      for(let i=0;i<4;i++){
+        updateSelectOptions(`${evKey}_r${i}`, athletes, counts);
+      }
+    } else {
+      let i=0;
+      while(true){
+        const elId=`${evKey}_slot${i}_ath`;
+        if(!document.getElementById(elId)) break;
+        updateSelectOptions(elId, athletes, counts);
+        i++;
+      }
+    }
+  });
+}
+
+function updateSelectOptions(selectId, athletes, counts){
+  const sel=document.getElementById(selectId);
+  if(!sel) return;
+  const currentVal=sel.value;
+  sel.innerHTML=buildAthOptions(athletes, counts, currentVal);
+}
 
 // ─── LIVE CALC HELPERS ───
 function updateFieldDisplay(slotKey){
@@ -774,22 +907,24 @@ function formatMs(ms, useMins=false){
 }
 
 // ─── ADD SLOT HELPERS ───
-function addSprintSlot(evKey, evId){ addSlotGeneric(evKey, evId, 'sprint'); }
-function addFieldSlot(evKey, evId){ addSlotGeneric(evKey, evId, 'field'); }
-function addDistSlot(evKey, evId){ addSlotGeneric(evKey, evId, 'dist'); }
-function addSlotGeneric(evKey, evId, mode){
+function addSprintSlot(evKey, evId){ addSlotGeneric(evKey, evId); }
+function addFieldSlot(evKey, evId){ addSlotGeneric(evKey, evId); }
+function addDistSlot(evKey, evId){ addSlotGeneric(evKey, evId); }
+function addSlotGeneric(evKey, evId){
   saveMeetSheetSilent();
   const gender=state.activeMeetGender;
+  const meetId=state.activeMeetId;
   const ev=state.events.find(e=>e.id===evId);
   const athletes=state.athletes.filter(a=>a.gender===gender);
-  const athOptions=`<option value="">— Select —</option>`+athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
-  const existing=state.meetEntries.filter(e=>e.meetId===state.activeMeetId&&e.gender===gender&&e.eventId===evId);
+  const eventCounts=buildEventCounts(meetId,gender,null);
+  const existing=state.meetEntries.filter(e=>e.meetId===meetId&&e.gender===gender&&e.eventId===evId);
   const block=document.getElementById(`block_${evKey}`);
   const wasOpen=block.classList.contains('open');
   const orderNum=parseInt(block.querySelector('.event-order-num').textContent)||1;
-  block.outerHTML=buildEventBlock(ev,evKey,athOptions,existing,orderNum);
+  block.outerHTML=buildEventBlock(ev,evKey,athletes,eventCounts,existing,orderNum);
   const nb=document.getElementById(`block_${evKey}`);
   if(wasOpen) nb.classList.add('open');
+  renderEventCounter(athletes,eventCounts);
 }
 
 // ─── SAVE ───
