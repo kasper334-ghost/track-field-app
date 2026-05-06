@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Track & Field Manager</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
+:root{--red:#D62828;--gold:#F7B731;--dark:#0D0D0D;--mid:#1A1A1A;--surface:#222;--border:#333;--text:#F0F0F0;--muted:#888;--green:#2ECC71;--blue:#3498DB;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Barlow',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overscroll-behavior:none;}
+#setup-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0D0D0D 0%,#1a0a0a 100%);}
+.setup-logo{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:800;letter-spacing:2px;color:var(--gold);text-shadow:0 0 40px rgba(247,183,49,0.3);margin-bottom:4px;}
+.setup-sub{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:6px;color:var(--red);text-transform:uppercase;margin-bottom:40px;}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:480px;}
+.setup-card h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;margin-bottom:8px;}
+.setup-card p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.setup-card p a{color:var(--gold);text-decoration:none;}
+.field-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.field-input{width:100%;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--text);margin-bottom:16px;-webkit-appearance:none;transition:border-color 0.2s;}
+.field-input:focus{outline:none;border-color:var(--gold);}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 8L0 0h12z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.btn-primary{width:100%;background:var(--red);color:white;border:none;border-radius:10px;padding:15px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
+.btn-primary:active{opacity:0.85;}
+.btn-outline{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;cursor:pointer;margin-top:10px;}
+.setup-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.setup-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.step-num{background:var(--border);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px;flex-shrink:0;}
+#app{display:none;flex-direction:column;height:100vh;height:100dvh;}
+.app-header{background:var(--mid);border-bottom:2px solid var(--red);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.app-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;letter-spacing:1px;color:var(--gold);}
+.app-title span{color:var(--red);}
+.sync-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.sync-btn.syncing{border-color:var(--green);color:var(--green);}
+.tab-bar{background:var(--mid);display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.tab-btn{flex:1;padding:12px 4px;background:transparent;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;position:relative;bottom:-1px;}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:2px;text-transform:uppercase;}
+.btn-add{background:var(--red);color:white;border:none;border-radius:8px;padding:9px 16px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.athlete-grid{display:flex;flex-direction:column;gap:10px;}
+.athlete-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+.athlete-info{flex:1;min-width:0;}
+.athlete-name{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;}
+.athlete-meta{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-left:6px;}
+.badge-m{background:rgba(52,152,219,0.2);color:var(--blue);}
+.badge-f{background:rgba(214,40,40,0.2);color:#ff6b8a;}
+.card-actions{display:flex;gap:8px;flex-shrink:0;}
+.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 10px;cursor:pointer;font-size:14px;transition:all 0.2s;}
+.btn-icon:active{opacity:0.7;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:12px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:2px;margin-bottom:18px;text-transform:uppercase;color:var(--gold);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{margin-bottom:14px;}
+.modal-actions{display:flex;gap:10px;margin-top:6px;}
+.btn-cancel{flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.btn-save{flex:2;background:var(--red);color:white;border:none;border-radius:10px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.meet-selector{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+.meet-row{display:flex;gap:8px;align-items:flex-end;}
+.meet-row .field-input{margin-bottom:0;flex:1;font-size:14px;}
+.entries-table{width:100%;border-collapse:collapse;font-size:13px;}
+.entries-table th{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:7px 8px;text-align:left;border-bottom:1px solid var(--border);}
+.entries-table td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+.result-badge{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--gold);}
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.filter-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(247,183,49,0.08);}
+.record-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:4px;}
+.record-athlete{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+.record-event{font-size:12px;color:var(--muted);margin-top:2px;}
+.record-result{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--gold);text-align:right;}
+.record-meet{font-size:11px;color:var(--muted);text-align:right;margin-top:2px;}
+.status-bar{background:var(--mid);border-top:1px solid var(--border);padding:7px 14px;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;}
+.status-dot.offline{background:var(--muted);}
+.empty-state{text-align:center;padding:40px 24px;color:var(--muted);}
+.empty-state .empty-icon{font-size:36px;margin-bottom:10px;}
+.empty-state p{font-size:13px;line-height:1.5;}
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;padding:11px 22px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;opacity:0;transition:all 0.3s;z-index:200;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red);color:white;}
+pre#script-code{background:var(--mid);border:1px solid var(--border);border-radius:12px;padding:14px;font-family:monospace;font-size:11px;color:#aaa;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin-bottom:12px;}
+</style>
+</head>
+<body>
+
+<div id="setup-screen">
+  <div class="setup-logo">⚡ T&F</div>
+  <div class="setup-sub">Track & Field Manager</div>
+  <div class="setup-card">
+    <h2>CONNECT GOOGLE SHEETS</h2>
+    <p>Store all data in your own Google Sheet. <a href="#" onclick="toggleInstructions();return false;">Setup instructions ▾</a></p>
+    <div id="instructions" style="display:none;">
+      <div class="setup-steps">
+        <div class="setup-step"><div class="step-num">1</div><div>Create a new Google Sheet at <strong style="color:var(--text)">sheets.google.com</strong></div></div>
+        <div class="setup-step"><div class="step-num">2</div><div>Click <strong style="color:var(--text)">Extensions → Apps Script</strong></div></div>
+        <div class="setup-step"><div class="step-num">3</div><div>Paste the script from the <strong style="color:var(--gold)">SCRIPT tab</strong> in the main app, then <strong style="color:var(--text)">Deploy → New Deployment → Web App</strong></div></div>
+        <div class="setup-step"><div class="step-num">4</div><div>Execute as: <strong style="color:var(--text)">Me</strong> · Access: <strong style="color:var(--text)">Anyone</strong> → Copy the Web App URL</div></div>
+      </div>
+    </div>
+    <div class="form-group"><label class="field-label">Web App URL</label><input type="url" class="field-input" id="api-url" placeholder="https://script.google.com/macros/s/..."/></div>
+    <div class="form-group"><label class="field-label">Team / School Name</label><input type="text" class="field-input" id="team-name" placeholder="e.g. Riverside High Track"/></div>
+    <button class="btn-primary" onclick="connectApp()">⚡ CONNECT & LAUNCH</button>
+    <button class="btn-outline" onclick="launchDemo()">Try Demo Mode (no Google Sheets)</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="app">
+  <div class="app-header">
+    <div class="app-title">⚡ <span id="team-display">T&F</span></div>
+    <button class="sync-btn" id="sync-btn" onclick="syncAll()">↻ SYNC</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('roster',this)">ROSTER</button>
+    <button class="tab-btn" onclick="switchTab('meet',this)">MEET</button>
+    <button class="tab-btn" onclick="switchTab('records',this)">RECORDS</button>
+    <button class="tab-btn" onclick="switchTab('script',this)">SCRIPT</button>
+  </div>
+
+  <!-- ROSTER -->
+  <div class="tab-content" id="tab-roster">
+    <div class="section-header">
+      <div class="section-title">ROSTER <span style="color:var(--muted);font-size:15px;" id="roster-count"></span></div>
+      <button class="btn-add" onclick="openAthleteModal()">+ ATHLETE</button>
+    </div>
+    <div class="athlete-grid" id="athlete-list"></div>
+  </div>
+
+  <!-- MEET -->
+  <div class="tab-content" id="tab-meet" style="display:none">
+    <div class="section-header">
+      <div class="section-title">MEET ENTRIES</div>
+      <button class="btn-add" onclick="openEntryModal()">+ ENTRY</button>
+    </div>
+    <div class="meet-selector">
+      <label class="field-label">ACTIVE MEET</label>
+      <div class="meet-row">
+        <input type="text" class="field-input" id="meet-name-input" placeholder="Meet name"/>
+        <input type="date" class="field-input" id="meet-date-input" style="width:140px;"/>
+        <button class="btn-add" style="height:44px;" onclick="setActiveMeet()">SET</button>
+      </div>
+    </div>
+    <div class="section-header"><div class="section-title" style="font-size:16px;" id="active-meet-label">NO MEET SELECTED</div></div>
+    <div id="meet-entries-list"></div>
+  </div>
+
+  <!-- RECORDS -->
+  <div class="tab-content" id="tab-records" style="display:none">
+    <div class="section-header"><div class="section-title">MASTER RECORDS</div></div>
+    <div class="filter-bar">
+      <button class="filter-pill active" onclick="filterRecords('all',this)">ALL</button>
+      <button class="filter-pill" onclick="filterRecords('M',this)">BOYS</button>
+      <button class="filter-pill" onclick="filterRecords('F',this)">GIRLS</button>
+    </div>
+    <div id="filter-event-bar" class="filter-bar" style="margin-top:-6px;"></div>
+    <div id="records-list"></div>
+  </div>
+
+  <!-- SCRIPT -->
+  <div class="tab-content" id="tab-script" style="display:none">
+    <div class="section-header"><div class="section-title">APPS SCRIPT CODE</div></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Copy this into your Google Apps Script editor. Deploy as Web App (Execute as: Me, Access: Anyone).</p>
+    <pre id="script-code"></pre>
+    <button class="btn-add" style="width:100%;justify-content:center;" onclick="copyScript()">📋 COPY SCRIPT</button>
+  </div>
+
+  <div class="status-bar">
+    <div><span class="status-dot" id="status-dot"></span><span id="status-text">Ready</span></div>
+    <div id="last-sync">Not synced</div>
+  </div>
+</div>
+
+<!-- ATHLETE MODAL -->
+<div class="modal-overlay" id="athlete-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title" id="athlete-modal-title">ADD ATHLETE</div>
+    <div class="form-group"><label class="field-label">Full Name</label><input type="text" class="field-input" id="ath-name" placeholder="First Last"/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="field-label">Gender</label>
+        <select class="field-input" id="ath-gender"><option value="M">Male</option><option value="F">Female</option></select>
+      </div>
+      <div class="form-group"><label class="field-label">Grade</label>
+        <select class="field-input" id="ath-grade"><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="field-label">Age</label><input type="number" class="field-input" id="ath-age" placeholder="16" min="10" max="19"/></div>
+      <div class="form-group"><label class="field-label">Events (comma sep.)</label><input type="text" class="field-input" id="ath-events" placeholder="100m, Long Jump"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('athlete-modal')">CANCEL</button>
+      <button class="btn-save" onclick="saveAthlete()">SAVE ATHLETE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ENTRY MODAL -->
+<div class="modal-overlay" id="entry-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">LOG RESULT</div>
+    <div class="form-group"><label class="field-label">Athlete</label><select class="field-input" id="entry-athlete"></select></div>
+    <div class="form-group"><label class="field-label">Event</label>
+      <select class="field-input" id="entry-event">
+        <optgroup label="Sprints"><option>100m</option><option>200m</option><option>400m</option></optgroup>
+        <optgroup label="Distance"><option>800m</option><option>1600m</option><option>3200m</option></optgroup>
+        <optgroup label="Hurdles"><option>100m Hurdles</option><option>110m Hurdles</option><option>300m Hurdles</option><option>400m Hurdles</option></optgroup>
+        <optgroup label="Relays"><option>4x100 Relay</option><option>4x400 Relay</option><option>Sprint Medley</option></optgroup>
+        <optgroup label="Jumps"><option>High Jump</option><option>Long Jump</option><option>Triple Jump</option><option>Pole Vault</option></optgroup>
+        <optgroup label="Throws"><option>Shot Put</option><option>Discus</option><option>Javelin</option><option>Hammer</option></optgroup>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="field-label">Result (time / dist)</label><input type="text" class="field-input" id="entry-result" placeholder='12.45 or 18&apos;6"'/></div>
+      <div class="form-group"><label class="field-label">Place</label><input type="number" class="field-input" id="entry-place" placeholder="1" min="1"/></div>
+    </div>
+    <div class="form-group"><label class="field-label">Notes (PR, wind, etc.)</label><input type="text" class="field-input" id="entry-notes" placeholder="PR, Wind +1.2, etc."/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('entry-modal')">CANCEL</button>
+      <button class="btn-save" onclick="saveEntry()">LOG RESULT</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const APPS_SCRIPT_CODE = `// ============================================
+// TRACK & FIELD MANAGER — Google Apps Script
+// Deploy: Extensions > Apps Script
+// Then: Deploy > New Deployment > Web App
+// Execute as: Me | Access: Anyone
+// ============================================
+
+const SS = SpreadsheetApp.getActiveSpreadsheet();
+
+function doGet(e) {
+  const action = e.parameter.action;
+  if (action === 'getAll') {
+    return respond({
+      athletes: getData('Roster'),
+      entries: getData('Entries'),
+      activeMeet: getData('ActiveMeet')[0] || {name:'',date:''}
+    });
+  }
+  return respond({ error: 'Unknown action' });
+}
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const { action, type, data } = body;
+    if (action === 'set') {
+      if (type === 'roster')     setData('Roster', data);
+      if (type === 'entries')    setData('Entries', data);
+      if (type === 'activeMeet') setData('ActiveMeet', [data]);
+      return respond({ success: true });
+    }
+    return respond({ error: 'Unknown action' });
+  } catch(err) {
+    return respond({ error: err.message });
+  }
+}
+
+function getData(sheetName) {
+  let sheet = SS.getSheetByName(sheetName);
+  if (!sheet) return [];
+  const rows = sheet.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1)
+    .filter(r => r.some(c => c !== ''))
+    .map(r => {
+      const obj = {};
+      headers.forEach((h, i) => obj[h] = String(r[i] || ''));
+      return obj;
+    });
+}
+
+function setData(sheetName, data) {
+  let sheet = SS.getSheetByName(sheetName);
+  if (!sheet) sheet = SS.insertSheet(sheetName);
+  sheet.clearContents();
+  if (!data || !data.length) return;
+  const headers = Object.keys(data[0]);
+  sheet.appendRow(headers);
+  data.forEach(row => sheet.appendRow(headers.map(h => row[h] || '')));
+}
+
+function respond(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+let state = {
+  apiUrl:'', teamName:'', demoMode:false,
+  athletes:[], entries:[], activeMeet:{name:'',date:''},
+  editingAthleteId:null
+};
+
+function toggleInstructions(){
+  const el=document.getElementById('instructions');
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function connectApp(){
+  const url=document.getElementById('api-url').value.trim();
+  const team=document.getElementById('team-name').value.trim();
+  if(!url){showToast('Please enter your Web App URL',true);return;}
+  state.apiUrl=url; state.teamName=team||'Track & Field'; state.demoMode=false;
+  localStorage.setItem('tf_api_url',url);
+  localStorage.setItem('tf_team',state.teamName);
+  launchApp(); syncAll();
+}
+
+function launchDemo(){
+  state.demoMode=true; state.teamName='Demo Team';
+  state.athletes=[
+    {id:'1',name:'Jordan Smith',gender:'M',grade:'11',age:'17',events:'100m, 200m'},
+    {id:'2',name:'Taylor Reed',gender:'F',grade:'10',age:'16',events:'Long Jump, 200m'},
+    {id:'3',name:'Alex Chen',gender:'M',grade:'12',age:'18',events:'800m, 1600m'},
+    {id:'4',name:'Morgan Davis',gender:'F',grade:'11',age:'17',events:'Shot Put, Discus'},
+  ];
+  state.entries=[
+    {id:'e1',athleteId:'1',athleteName:'Jordan Smith',meet:'County Invitational',date:'2025-04-10',event:'100m',result:'11.23',place:'2',notes:'PR'},
+    {id:'e2',athleteId:'2',athleteName:'Taylor Reed',meet:'County Invitational',date:'2025-04-10',event:'Long Jump',result:"17'4\"",place:'1',notes:''},
+    {id:'e3',athleteId:'3',athleteName:'Alex Chen',meet:'County Invitational',date:'2025-04-10',event:'1600m',result:'4:42.1',place:'3',notes:''},
+    {id:'e4',athleteId:'4',athleteName:'Morgan Davis',meet:'County Invitational',date:'2025-04-10',event:'Shot Put',result:"38'7\"",place:'1',notes:'Season best'},
+  ];
+  state.activeMeet={name:'County Invitational',date:'2025-04-10'};
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('setup-screen').style.display='none';
+  const app=document.getElementById('app'); app.style.display='flex';
+  document.getElementById('team-display').textContent=state.teamName;
+  if(state.activeMeet.name){
+    document.getElementById('meet-name-input').value=state.activeMeet.name;
+    document.getElementById('meet-date-input').value=state.activeMeet.date;
+    document.getElementById('active-meet-label').textContent=state.activeMeet.name.toUpperCase();
+  }
+  renderAll();
+  document.getElementById('script-code').textContent=APPS_SCRIPT_CODE;
+}
+
+function renderAll(){ renderRoster(); renderMeetEntries(); renderRecords(); }
+
+function renderRoster(){
+  const list=document.getElementById('athlete-list');
+  document.getElementById('roster-count').textContent=`(${state.athletes.length})`;
+  if(!state.athletes.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏃</div><p>No athletes yet.<br>Tap + ATHLETE to add your roster.</p></div>`;return;
+  }
+  list.innerHTML=state.athletes.map(a=>`
+    <div class="athlete-card">
+      <div class="athlete-info">
+        <div class="athlete-name">${a.name}<span class="badge badge-${a.gender.toLowerCase()}">${a.gender}</span></div>
+        <div class="athlete-meta"><span>Gr.${a.grade}</span><span>Age ${a.age}</span><span style="color:var(--gold)">${a.events||'—'}</span></div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-icon" onclick="editAthlete('${a.id}')">✏️</button>
+        <button class="btn-icon" onclick="deleteAthlete('${a.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderMeetEntries(){
+  const list=document.getElementById('meet-entries-list');
+  const meetEntries=state.activeMeet.name?state.entries.filter(e=>e.meet===state.activeMeet.name):state.entries;
+  if(!meetEntries.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>No entries for this meet.<br>Tap + ENTRY to log results.</p></div>`;return;
+  }
+  list.innerHTML=`<table class="entries-table"><thead><tr><th>ATHLETE</th><th>EVENT</th><th>RESULT</th><th>PL</th><th></th></tr></thead><tbody>
+  ${meetEntries.map(e=>`<tr>
+    <td><strong style="font-family:'Barlow Condensed';font-size:16px;">${e.athleteName}</strong>${e.notes?`<br><span style="font-size:11px;color:var(--green)">${e.notes}</span>`:''}</td>
+    <td style="color:var(--muted);font-size:12px;">${e.event}</td>
+    <td class="result-badge">${e.result}</td>
+    <td style="color:var(--muted);">${e.place?'#'+e.place:'—'}</td>
+    <td><button class="btn-icon" onclick="deleteEntry('${e.id}')">🗑️</button></td>
+  </tr>`).join('')}
+  </tbody></table>`;
+}
+
+let recordsGenderFilter='all', recordsEventFilter='all';
+function renderRecords(){
+  const list=document.getElementById('records-list');
+  let entries=[...state.entries];
+  if(recordsGenderFilter==='M') entries=entries.filter(e=>{const a=state.athletes.find(a=>a.id===e.athleteId);return a&&a.gender==='M';});
+  if(recordsGenderFilter==='F') entries=entries.filter(e=>{const a=state.athletes.find(a=>a.id===e.athleteId);return a&&a.gender==='F';});
+  
+  const allEvents=[...new Set(state.entries.map(e=>e.event))].sort();
+  const evBar=document.getElementById('filter-event-bar');
+  if(allEvents.length){
+    evBar.innerHTML=`<button class="filter-pill ${recordsEventFilter==='all'?'active':''}" onclick="filterEvent('all',this)">ALL EVENTS</button>`
+      +allEvents.map(ev=>`<button class="filter-pill ${recordsEventFilter===ev?'active':''}" onclick="filterEvent('${ev.replace(/'/g,"\\'")}',this)">${ev}</button>`).join('');
+  }
+  if(recordsEventFilter!=='all') entries=entries.filter(e=>e.event===recordsEventFilter);
+  
+  if(!entries.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏆</div><p>No records yet.<br>Log meet results to build the master sheet.</p></div>`;return;
+  }
+  entries.sort((a,b)=>a.event.localeCompare(b.event)||a.athleteName.localeCompare(b.athleteName));
+  list.innerHTML=entries.map(e=>`
+    <div class="record-row">
+      <div><div class="record-athlete">${e.athleteName}</div><div class="record-event">${e.event}${e.notes?' · '+e.notes:''}</div></div>
+      <div><div class="record-result">${e.result}</div><div class="record-meet">${e.meet}</div></div>
+    </div>`).join('');
+}
+
+function filterRecords(type,btn){
+  recordsGenderFilter=type;
+  document.querySelectorAll('.filter-bar:first-of-type .filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active'); renderRecords();
+}
+function filterEvent(ev,btn){
+  recordsEventFilter=ev;
+  renderRecords();
+}
+
+function switchTab(tab,btn){
+  ['roster','meet','records','script'].forEach(t=>document.getElementById(`tab-${t}`).style.display=t===tab?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function openAthleteModal(id){
+  state.editingAthleteId=id||null;
+  document.getElementById('athlete-modal-title').textContent=id?'EDIT ATHLETE':'ADD ATHLETE';
+  if(id){
+    const a=state.athletes.find(a=>a.id===id);
+    document.getElementById('ath-name').value=a.name;
+    document.getElementById('ath-gender').value=a.gender;
+    document.getElementById('ath-grade').value=a.grade;
+    document.getElementById('ath-age').value=a.age;
+    document.getElementById('ath-events').value=a.events;
+  } else {
+    ['ath-name','ath-age','ath-events'].forEach(id=>document.getElementById(id).value='');
+  }
+  document.getElementById('athlete-modal').style.display='flex';
+}
+function editAthlete(id){openAthleteModal(id);}
+
+function saveAthlete(){
+  const name=document.getElementById('ath-name').value.trim();
+  if(!name){showToast('Name required',true);return;}
+  const athlete={
+    id:state.editingAthleteId||Date.now().toString(),
+    name, gender:document.getElementById('ath-gender').value,
+    grade:document.getElementById('ath-grade').value,
+    age:document.getElementById('ath-age').value,
+    events:document.getElementById('ath-events').value.trim()
+  };
+  if(state.editingAthleteId) state.athletes=state.athletes.map(a=>a.id===state.editingAthleteId?athlete:a);
+  else state.athletes.push(athlete);
+  closeModal('athlete-modal'); renderAll();
+  if(!state.demoMode) pushData('roster',state.athletes);
+  showToast(state.editingAthleteId?'Athlete updated ✓':'Athlete added ✓');
+}
+
+function deleteAthlete(id){
+  if(!confirm('Remove this athlete from the roster?')) return;
+  state.athletes=state.athletes.filter(a=>a.id!==id); renderAll();
+  if(!state.demoMode) pushData('roster',state.athletes);
+  showToast('Athlete removed');
+}
+
+function setActiveMeet(){
+  const name=document.getElementById('meet-name-input').value.trim();
+  const date=document.getElementById('meet-date-input').value;
+  if(!name){showToast('Enter a meet name',true);return;}
+  state.activeMeet={name,date};
+  document.getElementById('active-meet-label').textContent=name.toUpperCase();
+  renderMeetEntries();
+  if(!state.demoMode) pushData('activeMeet',state.activeMeet);
+  showToast(`Active: ${name}`);
+}
+
+function openEntryModal(){
+  if(!state.activeMeet.name){showToast('Set a meet first',true);return;}
+  if(!state.athletes.length){showToast('Add athletes first',true);return;}
+  const sel=document.getElementById('entry-athlete');
+  sel.innerHTML=state.athletes.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+  ['entry-result','entry-place','entry-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('entry-modal').style.display='flex';
+}
+
+function saveEntry(){
+  const athId=document.getElementById('entry-athlete').value;
+  const athlete=state.athletes.find(a=>a.id===athId);
+  const result=document.getElementById('entry-result').value.trim();
+  if(!result){showToast('Result required',true);return;}
+  const entry={
+    id:Date.now().toString(), athleteId:athId, athleteName:athlete.name,
+    meet:state.activeMeet.name, date:state.activeMeet.date,
+    event:document.getElementById('entry-event').value,
+    result, place:document.getElementById('entry-place').value,
+    notes:document.getElementById('entry-notes').value.trim()
+  };
+  state.entries.push(entry); closeModal('entry-modal'); renderAll();
+  if(!state.demoMode) pushData('entries',state.entries);
+  showToast('Result logged ✓');
+}
+
+function deleteEntry(id){
+  state.entries=state.entries.filter(e=>e.id!==id); renderAll();
+  if(!state.demoMode) pushData('entries',state.entries);
+  showToast('Entry removed');
+}
+
+async function syncAll(){
+  if(state.demoMode){showToast('Demo mode — no sync');return;}
+  const btn=document.getElementById('sync-btn');
+  btn.classList.add('syncing'); btn.textContent='↻ SYNCING...';
+  setStatus('Syncing...',true);
+  try{
+    const res=await fetch(`${state.apiUrl}?action=getAll`);
+    const data=await res.json();
+    if(data.athletes) state.athletes=data.athletes;
+    if(data.entries) state.entries=data.entries;
+    if(data.activeMeet&&data.activeMeet.name) state.activeMeet=data.activeMeet;
+    renderAll();
+    if(state.activeMeet.name){
+      document.getElementById('meet-name-input').value=state.activeMeet.name;
+      document.getElementById('meet-date-input').value=state.activeMeet.date;
+      document.getElementById('active-meet-label').textContent=state.activeMeet.name.toUpperCase();
+    }
+    document.getElementById('last-sync').textContent='Synced '+new Date().toLocaleTimeString();
+    setStatus('Connected',true); showToast('Synced ✓');
+  }catch(e){setStatus('Offline',false);showToast('Sync failed — check URL',true);}
+  btn.classList.remove('syncing'); btn.textContent='↻ SYNC';
+}
+
+async function pushData(type,data){
+  if(state.demoMode) return;
+  try{
+    await fetch(state.apiUrl,{method:'POST',body:JSON.stringify({action:'set',type,data})});
+    document.getElementById('last-sync').textContent='Saved '+new Date().toLocaleTimeString();
+  }catch(e){showToast('Save failed',true);}
+}
+
+function copyScript(){
+  if(navigator.clipboard) navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>showToast('Script copied ✓'));
+  else{const ta=document.createElement('textarea');ta.value=APPS_SCRIPT_CODE;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Script copied ✓');}
+}
+
+function closeModal(id){document.getElementById(id).style.display='none';}
+function showToast(msg,error=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(error?' error':'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500);
+}
+function setStatus(msg,online){
+  document.getElementById('status-text').textContent=msg;
+  document.getElementById('status-dot').className='status-dot'+(online?'':' offline');
+}
+
+window.onload=()=>{
+  const savedUrl=localStorage.getItem('tf_api_url');
+  const savedTeam=localStorage.getItem('tf_team');
+  if(savedUrl){document.getElementById('api-url').value=savedUrl;state.apiUrl=savedUrl;}
+  if(savedTeam) document.getElementById('team-name').value=savedTeam;
+  document.getElementById('script-code').textContent=APPS_SCRIPT_CODE;
+};
+</script>
+</body>
+</html>
