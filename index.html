@@ -3,13 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Track & Field Manager</title>
+<title>Sports Manager</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
 :root{--red:#D62828;--gold:#F7B731;--dark:#0D0D0D;--mid:#1A1A1A;--surface:#222;--border:#333;--text:#F0F0F0;--muted:#888;--green:#2ECC71;--blue:#3498DB;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Barlow',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overscroll-behavior:none;}
 #setup-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0D0D0D 0%,#1a0a0a 100%);}
+/* SEASON SELECTOR SCREEN */
+#season-screen{min-height:100vh;display:none;flex-direction:column;align-items:center;padding:24px;background:linear-gradient(135deg,#0D0D0D 0%,#1a0a0a 100%);}
+.season-header{text-align:center;margin-bottom:28px;margin-top:20px;}
+.season-logo{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:800;letter-spacing:2px;color:var(--gold);text-shadow:0 0 40px rgba(247,183,49,0.3);}
+.season-team{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-top:4px;}
+.season-list{width:100%;max-width:480px;}
+.season-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color 0.2s;}
+.season-card:hover{border-color:var(--gold);}
+.season-card-left{display:flex;align-items:center;gap:12px;}
+.season-sport-icon{font-size:28px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--mid);border-radius:10px;flex-shrink:0;}
+.season-card-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:1px;}
+.season-card-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.season-card-arrow{font-size:18px;color:var(--muted);}
+.season-card-actions{display:flex;gap:6px;}
+.new-season-btn{width:100%;max-width:480px;background:var(--red);color:white;border:none;border-radius:12px;padding:16px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.disconnect-btn{background:transparent;border:none;color:var(--muted);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;cursor:pointer;margin-top:16px;text-decoration:underline;}
+/* SPORT COLOR THEMES */
+.sport-track .app-header{border-bottom-color:var(--red);}
+.sport-track .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.sport-swim .app-header{border-bottom-color:var(--blue);}
+.sport-swim .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
+.sport-swim .btn-add{background:var(--blue);}
+.sport-xc .app-header{border-bottom-color:var(--green);}
+.sport-xc .tab-btn.active{color:var(--green);border-bottom-color:var(--green);}
+.sport-xc .btn-add{background:#27ae60;}
+/* SEASON BADGE IN HEADER */
+.season-badge{font-size:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:5px;background:var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;}
+.season-badge:hover{background:var(--surface);color:var(--text);}
 .setup-logo{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:800;letter-spacing:2px;color:var(--gold);text-shadow:0 0 40px rgba(247,183,49,0.3);margin-bottom:4px;}
 .setup-sub{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:600;letter-spacing:6px;color:var(--red);text-transform:uppercase;margin-bottom:40px;}
 .setup-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:480px;}
@@ -190,10 +218,24 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
 
 <div class="toast" id="toast"></div>
 
+<!-- SEASON SELECTOR SCREEN -->
+<div id="season-screen">
+  <div class="season-header">
+    <div class="season-logo">⚡ SPORTS MGR</div>
+    <div class="season-team" id="season-team-name"></div>
+  </div>
+  <div class="season-list" id="season-list"></div>
+  <button class="new-season-btn" onclick="openNewSeasonModal()">+ NEW SEASON</button>
+  <button class="disconnect-btn" onclick="disconnectApp()">⚙ Change Google Sheets Connection</button>
+</div>
+
 <div id="app">
   <div class="app-header">
     <div class="app-title">⚡ <span id="team-display">T&F</span></div>
-    <button class="sync-btn" id="sync-btn" onclick="syncAll()">↻ SYNC</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="season-badge" id="season-badge" onclick="goToSeasonSelector()" title="Switch season">— —</button>
+      <button class="sync-btn" id="sync-btn" onclick="syncAll()">↻ SYNC</button>
+    </div>
   </div>
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('roster',this)">ROSTER</button>
@@ -272,6 +314,32 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   </div>
 </div>
 
+<!-- NEW SEASON MODAL -->
+<div class="modal-overlay" id="new-season-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">NEW SEASON</div>
+    <div class="form-group"><label class="field-label">Sport</label>
+      <select class="field-input" id="ns-sport" onchange="updateSeasonName()">
+        <option value="track">🏃 Track & Field</option>
+        <option value="swim">🏊 Swimming</option>
+        <option value="xc">🌲 Cross Country</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="field-label">Year</label>
+      <select class="field-input" id="ns-year" onchange="updateSeasonName()">
+        <option>2024</option><option>2025</option><option selected>2026</option><option>2027</option><option>2028</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="field-label">Season Name (auto-filled)</label>
+      <input type="text" class="field-input" id="ns-name" placeholder="Track & Field 2026"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('new-season-modal')">CANCEL</button>
+      <button class="btn-save" onclick="createSeason()">CREATE SEASON</button>
+    </div>
+  </div>
+</div>
+
 <!-- NEW MEET MODAL -->
 <div class="modal-overlay" id="new-meet-modal" style="display:none">
   <div class="modal">
@@ -324,7 +392,7 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
     <button class="gender-tab girls" onclick="switchGenderTab('F',this)">♀ GIRLS</button>
   </div>
   <div class="event-counter-panel" id="event-counter-panel">
-    <div class="event-counter-title">EVENT COUNT PER ATHLETE (MAX 4)</div>
+    <div class="event-counter-title" id="counter-title">EVENT COUNT PER ATHLETE (MAX 4)</div>
     <div class="event-counter-grid" id="event-counter-grid"></div>
     <div class="counter-legend">
       <span><span class="legend-dot" style="background:var(--border);border:1px solid var(--muted);"></span>0–3 events</span>
@@ -336,19 +404,28 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
 </div>
 
 <script>
-const APPS_SCRIPT_CODE = `// TRACK & FIELD MANAGER — Google Apps Script
+const APPS_SCRIPT_CODE = `// SPORTS MANAGER — Google Apps Script
 // Deploy > New Deployment > Web App
 // Execute as: Me | Access: Anyone
 
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
 function doGet(e) {
-  if (e.parameter.action === 'getAll') {
+  const action = e.parameter.action;
+  const seasonId = e.parameter.seasonId || '';
+  const type = e.parameter.type || '';
+
+  if (action === 'getAll') {
+    // seasons list request (no seasonId)
+    if (type === 'seasons' || !seasonId) {
+      return respond({ seasons: getData('Seasons') });
+    }
+    // season-specific data
     return respond({
-      athletes: getData('Roster'),
-      meets: getData('Meets'),
-      meetEntries: getData('MeetEntries'),
-      events: getData('Events')
+      athletes:   getData(seasonId + '_Roster'),
+      meets:      getData(seasonId + '_Meets'),
+      meetEntries:getData(seasonId + '_Entries'),
+      events:     getData(seasonId + '_Events'),
     });
   }
   return respond({ error: 'Unknown action' });
@@ -357,12 +434,19 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    const { action, type, data } = body;
+    const { action, type, seasonId, data } = body;
     if (action === 'set') {
-      if (type === 'roster')      setData('Roster', data);
-      if (type === 'meets')       setData('Meets', data);
-      if (type === 'meetEntries') setData('MeetEntries', data);
-      if (type === 'events')      setData('Events', data);
+      if (type === 'seasons')  { setData('Seasons', data); return respond({ success: true }); }
+      if (!seasonId) return respond({ error: 'seasonId required' });
+      const sheetMap = {
+        roster:      seasonId + '_Roster',
+        meets:       seasonId + '_Meets',
+        meetEntries: seasonId + '_Entries',
+        events:      seasonId + '_Events',
+      };
+      // also handle direct sheet name keys (for deletion cleanup)
+      const sheetName = sheetMap[type] || type;
+      setData(sheetName, data);
       return respond({ success: true });
     }
     return respond({ error: 'Unknown action' });
@@ -402,7 +486,63 @@ function respond(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }`;
 
-// ─── EVENT DEFINITIONS ───
+// ─── SPORT DEFINITIONS ───
+const SPORT_META = {
+  track: { label:'Track & Field', icon:'🏃', cssClass:'sport-track', maxEventsPerAthlete:4 },
+  swim:  { label:'Swimming',      icon:'🏊', cssClass:'sport-swim',  maxEventsPerAthlete:4 },
+  xc:    { label:'Cross Country', icon:'🌲', cssClass:'sport-xc',    maxEventsPerAthlete:2 },
+};
+
+const SPORT_EVENTS = {
+  track: [
+    {id:'ev1', name:'110m Hurdles',  category:'Hurdles',  type:'sprint',        measurement:'sec_hundredths', order:1},
+    {id:'ev2', name:'4x800 Relay',   category:'Relays',   type:'relay_distance',measurement:'min_sec',        order:2,  splits:['Leg 1','Leg 2','Leg 3','Leg 4']},
+    {id:'ev3', name:'100m Hurdles',  category:'Hurdles',  type:'sprint',        measurement:'sec_hundredths', order:3},
+    {id:'ev4', name:'100m',          category:'Sprints',  type:'sprint',        measurement:'sec_hundredths', order:4},
+    {id:'ev5', name:'1600m',         category:'Distance', type:'distance',      measurement:'min_sec',        order:5,  splits:['400m','800m','1200m','Finish']},
+    {id:'ev6', name:'4x100 Relay',   category:'Relays',   type:'relay_sprint',  measurement:'sec_hundredths', order:6,  splits:['Leg 1','Leg 2','Leg 3','Leg 4']},
+    {id:'ev7', name:'400m',          category:'Sprints',  type:'sprint',        measurement:'sec_hundredths', order:7},
+    {id:'ev8', name:'300m Hurdles',  category:'Hurdles',  type:'sprint',        measurement:'sec_hundredths', order:8},
+    {id:'ev9', name:'800m',          category:'Distance', type:'distance',      measurement:'min_sec',        order:9,  splits:['400m split','Finish']},
+    {id:'ev10',name:'200m',          category:'Sprints',  type:'sprint',        measurement:'sec_hundredths', order:10},
+    {id:'ev11',name:'3200m',         category:'Distance', type:'distance',      measurement:'min_sec',        order:11, splits:['800m','1600m','2400m','Finish']},
+    {id:'ev12',name:'4x400 Relay',   category:'Relays',   type:'relay_sprint',  measurement:'sec_hundredths', order:12, splits:['Leg 1','Leg 2','Leg 3','Leg 4']},
+    {id:'ev13',name:'Long Jump',     category:'Jumps',    type:'field',         measurement:'feet_inches',    order:13},
+    {id:'ev14',name:'Triple Jump',   category:'Jumps',    type:'field',         measurement:'feet_inches',    order:14},
+    {id:'ev15',name:'Pole Vault',    category:'Jumps',    type:'field',         measurement:'feet_inches',    order:15},
+    {id:'ev16',name:'High Jump',     category:'Jumps',    type:'field',         measurement:'feet_inches',    order:16},
+    {id:'ev17',name:'Shot Put',      category:'Throws',   type:'field',         measurement:'feet_inches',    order:17},
+    {id:'ev18',name:'Discus',        category:'Throws',   type:'field',         measurement:'feet_inches',    order:18},
+    {id:'ev19',name:'Javelin',       category:'Throws',   type:'field',         measurement:'feet_inches',    order:19},
+  ],
+  swim: [
+    {id:'sw1', name:'50 Free',       category:'Freestyle',  type:'sprint', measurement:'sec_hundredths', order:1},
+    {id:'sw2', name:'100 Free',      category:'Freestyle',  type:'sprint', measurement:'sec_hundredths', order:2},
+    {id:'sw3', name:'200 Free',      category:'Distance',   type:'distance',measurement:'min_sec',       order:3, splits:['50m','100m','150m','Finish']},
+    {id:'sw4', name:'500 Free',      category:'Distance',   type:'distance',measurement:'min_sec',       order:4, splits:['100m','200m','300m','400m','Finish']},
+    {id:'sw5', name:'100 Backstroke',category:'Backstroke', type:'sprint', measurement:'sec_hundredths', order:5},
+    {id:'sw6', name:'200 Backstroke',category:'Backstroke', type:'distance',measurement:'min_sec',      order:6, splits:['50m','100m','150m','Finish']},
+    {id:'sw7', name:'100 Breaststroke',category:'Breaststroke',type:'sprint',measurement:'sec_hundredths',order:7},
+    {id:'sw8', name:'200 Breaststroke',category:'Breaststroke',type:'distance',measurement:'min_sec',   order:8, splits:['50m','100m','150m','Finish']},
+    {id:'sw9', name:'100 Butterfly', category:'Butterfly',  type:'sprint', measurement:'sec_hundredths', order:9},
+    {id:'sw10',name:'200 Butterfly', category:'Butterfly',  type:'distance',measurement:'min_sec',      order:10,splits:['50m','100m','150m','Finish']},
+    {id:'sw11',name:'200 IM',        category:'Individual Medley',type:'distance',measurement:'min_sec',order:11,splits:['Fly 50','Back 100','Breast 150','Finish']},
+    {id:'sw12',name:'400 IM',        category:'Individual Medley',type:'distance',measurement:'min_sec',order:12,splits:['Fly 100','Back 200','Breast 300','Finish']},
+    {id:'sw13',name:'200 Free Relay',category:'Relays',     type:'relay_sprint',measurement:'sec_hundredths',order:13,splits:['Leg 1','Leg 2','Leg 3','Leg 4']},
+    {id:'sw14',name:'200 Medley Relay',category:'Relays',   type:'relay_sprint',measurement:'sec_hundredths',order:14,splits:['Back','Breast','Fly','Free']},
+    {id:'sw15',name:'400 Free Relay',category:'Relays',     type:'relay_sprint',measurement:'min_sec',  order:15,splits:['Leg 1','Leg 2','Leg 3','Leg 4']},
+  ],
+  xc: [
+    {id:'xc1', name:'Varsity 5K',    category:'Race',     type:'distance', measurement:'min_sec', order:1, splits:['1 Mile','2 Mile','Finish']},
+    {id:'xc2', name:'JV 5K',         category:'Race',     type:'distance', measurement:'min_sec', order:2, splits:['1 Mile','2 Mile','Finish']},
+    {id:'xc3', name:'Varsity 3K',    category:'Race',     type:'distance', measurement:'min_sec', order:3, splits:['1 Mile','Finish']},
+    {id:'xc4', name:'JV 3K',         category:'Race',     type:'distance', measurement:'min_sec', order:4, splits:['1 Mile','Finish']},
+    {id:'xc5', name:'Freshmen 5K',   category:'Race',     type:'distance', measurement:'min_sec', order:5, splits:['1 Mile','2 Mile','Finish']},
+    {id:'xc6', name:'Middle School 2 Mile',category:'Race',type:'distance',measurement:'min_sec', order:6, splits:['1 Mile','Finish']},
+  ],
+};
+
+// ─── STATE ───
 // measurement: 'sec_hundredths' | 'min_sec' | 'feet_inches'
 // type: 'sprint' | 'distance' | 'relay_sprint' | 'relay_distance' | 'field'
 // splits: array of split labels for distance/relay events
@@ -436,8 +576,13 @@ const UNIT_LABELS = {
 
 let state = {
   apiUrl:'', teamName:'', demoMode:false,
+  // seasons list (stored in Sheets as 'Seasons' tab)
+  seasons:[],
+  // active season
+  activeSeason:null, // {id, name, sport, year}
+  // per-season data (scoped by activeSeason.id)
   athletes:[], meets:[], meetEntries:[],
-  events:JSON.parse(JSON.stringify(DEFAULT_EVENTS)),
+  events:[],
   editingAthleteId:null,
   activeMeetId:null,
   activeMeetGender:'M'
@@ -452,31 +597,140 @@ function connectApp(){
   const url=document.getElementById('api-url').value.trim();
   const team=document.getElementById('team-name').value.trim();
   if(!url){showToast('Please enter your Web App URL',true);return;}
-  state.apiUrl=url; state.teamName=team||'Track & Field'; state.demoMode=false;
+  state.apiUrl=url; state.teamName=team||'Sports Manager'; state.demoMode=false;
   localStorage.setItem('tf_api_url',url);
   localStorage.setItem('tf_team',state.teamName);
-  launchApp(); syncAll();
+  document.getElementById('setup-screen').style.display='none';
+  syncSeasons();
+}
+function disconnectApp(){
+  if(!confirm('Disconnect from Google Sheets? You will need to re-enter your URL.')) return;
+  localStorage.removeItem('tf_api_url');
+  localStorage.removeItem('tf_team');
+  state.apiUrl=''; state.activeSeason=null;
+  document.getElementById('season-screen').style.display='none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('setup-screen').style.display='flex';
 }
 function launchDemo(){
   state.demoMode=true; state.teamName='Demo Team';
-  state.athletes=[
-    {id:'a1',name:'Jordan Smith',gender:'M',grade:'11',age:'17'},
-    {id:'a2',name:'Marcus Lee',gender:'M',grade:'10',age:'16'},
-    {id:'a3',name:'Tyler Brown',gender:'M',grade:'12',age:'18'},
-    {id:'a4',name:'Ryan Jones',gender:'M',grade:'11',age:'17'},
-    {id:'a5',name:'Taylor Reed',gender:'F',grade:'10',age:'16'},
-    {id:'a6',name:'Morgan Davis',gender:'F',grade:'11',age:'17'},
-    {id:'a7',name:'Alex Chen',gender:'F',grade:'12',age:'18'},
-    {id:'a8',name:'Jamie Wilson',gender:'F',grade:'10',age:'16'},
+  state.seasons=[
+    {id:'s1',name:'Track & Field 2025',sport:'track',year:'2025'},
+    {id:'s2',name:'Cross Country 2025',sport:'xc',year:'2025'},
   ];
-  state.meets=[{id:'m1',name:'County Invitational',date:'2025-04-10',location:'Memorial Stadium'}];
-  launchApp();
+  showSeasonSelector();
 }
+
+// ─── SEASON SELECTOR ───
+function showSeasonSelector(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('season-screen').style.display='flex';
+  document.getElementById('season-team-name').textContent=state.teamName;
+  renderSeasonList();
+}
+function renderSeasonList(){
+  const list=document.getElementById('season-list');
+  if(!state.seasons.length){
+    list.innerHTML=`<div style="text-align:center;padding:32px;color:var(--muted);font-size:14px;line-height:1.6;">No seasons yet.<br>Tap + NEW SEASON to get started.</div>`;
+    return;
+  }
+  // group by sport
+  const bySport={};
+  state.seasons.forEach(s=>{
+    if(!bySport[s.sport]) bySport[s.sport]=[];
+    bySport[s.sport].push(s);
+  });
+  list.innerHTML=Object.entries(bySport).map(([sport,seasons])=>{
+    const meta=SPORT_META[sport]||{label:sport,icon:'🏅'};
+    return `<div style="margin-bottom:6px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:8px 4px 5px;">${meta.icon} ${meta.label}</div>
+      ${seasons.sort((a,b)=>b.year-a.year).map(s=>{
+        const ec=0; // entry count placeholder
+        return `<div class="season-card">
+          <div class="season-card-left" onclick="loadSeason('${s.id}')" style="flex:1;">
+            <div class="season-sport-icon">${meta.icon}</div>
+            <div>
+              <div class="season-card-name">${s.name}</div>
+              <div class="season-card-meta">${s.year} season · Tap to open</div>
+            </div>
+          </div>
+          <div class="season-card-actions">
+            <button class="btn-icon" onclick="deleteSeasonConfirm('${s.id}')" style="font-size:13px;">🗑️</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+function openNewSeasonModal(){
+  updateSeasonName();
+  document.getElementById('new-season-modal').style.display='flex';
+}
+function updateSeasonName(){
+  const sport=document.getElementById('ns-sport').value;
+  const year=document.getElementById('ns-year').value;
+  const meta=SPORT_META[sport]||{label:sport};
+  document.getElementById('ns-name').value=`${meta.label} ${year}`;
+}
+function createSeason(){
+  const sport=document.getElementById('ns-sport').value;
+  const year=document.getElementById('ns-year').value;
+  const name=document.getElementById('ns-name').value.trim();
+  if(!name){showToast('Season name required',true);return;}
+  // check for duplicate
+  if(state.seasons.find(s=>s.sport===sport&&s.year===year)){
+    if(!confirm(`A ${name} season already exists. Create another?`)) return;
+  }
+  const season={id:'s'+Date.now(),name,sport,year};
+  state.seasons.push(season);
+  closeModal('new-season-modal');
+  if(!state.demoMode) pushData('seasons',state.seasons);
+  renderSeasonList();
+  showToast(`${name} created ✓`);
+  loadSeason(season.id);
+}
+function deleteSeasonConfirm(id){
+  const s=state.seasons.find(s=>s.id===id);
+  if(!confirm(`Delete "${s.name}"? All roster, meets and results for this season will be permanently removed.`)) return;
+  state.seasons=state.seasons.filter(s=>s.id!==id);
+  if(!state.demoMode){
+    pushData('seasons',state.seasons);
+    // clear scoped data from sheets
+    pushData(`${id}_roster`,[]);
+    pushData(`${id}_meets`,[]);
+    pushData(`${id}_entries`,[]);
+    pushData(`${id}_events`,[]);
+  }
+  renderSeasonList();
+  showToast('Season deleted');
+}
+function loadSeason(id){
+  const season=state.seasons.find(s=>s.id===id);
+  if(!season){showToast('Season not found',true);return;}
+  state.activeSeason=season;
+  // reset season data
+  state.athletes=[]; state.meets=[]; state.meetEntries=[];
+  state.events=JSON.parse(JSON.stringify(SPORT_EVENTS[season.sport]||SPORT_EVENTS.track));
+  state.editingAthleteId=null; state.activeMeetId=null;
+  document.getElementById('season-screen').style.display='none';
+  launchApp();
+  if(!state.demoMode) syncSeasonData();
+}
+function goToSeasonSelector(){
+  showSeasonSelector();
+}
+
+// ─── APP LAUNCH ───
 function launchApp(){
-  document.getElementById('setup-screen').style.display='none';
+  const season=state.activeSeason;
+  const meta=SPORT_META[season.sport]||{label:season.sport,cssClass:'sport-track'};
+  document.getElementById('app').className=meta.cssClass;
   document.getElementById('app').style.display='flex';
   document.getElementById('team-display').textContent=state.teamName;
+  document.getElementById('season-badge').textContent=season.name;
   document.getElementById('script-code').textContent=APPS_SCRIPT_CODE;
+  // reset to first tab
+  switchTab('roster',document.querySelector('.tab-btn'));
   renderAll();
 }
 function renderAll(){ renderRoster(); renderMeets(); renderRecords(); renderEventsList(); }
@@ -643,6 +897,8 @@ function renderMeetSheetBody(){
   }
 
   document.getElementById('event-counter-panel').style.display='block';
+  const maxEv=SPORT_META[state.activeSeason?.sport]?.maxEventsPerAthlete||4;
+  document.getElementById('counter-title').textContent=`EVENT COUNT PER ATHLETE (MAX ${maxEv})`;
 
   // build event counts from saved state (not DOM — DOM not rendered yet)
   const eventCounts = buildEventCounts(meetId, gender, null);
@@ -698,11 +954,12 @@ function renderEventCounter(athletes, eventCounts){
 }
 
 function buildAthOptions(athletes, eventCounts, currentSelId){
-  // Show all athletes; disable those at 4 unless they're the currently selected one
+  const maxEvents = SPORT_META[state.activeSeason?.sport]?.maxEventsPerAthlete || 4;
+  // Show all athletes; disable those at max unless they're the currently selected one
   return `<option value="">— Select —</option>`+athletes.map(a=>{
     const cnt=eventCounts[a.id]||0;
-    const isMaxed=cnt>=4&&a.id!==currentSelId;
-    const label=cnt>=4?`${a.name} (${cnt}/4 MAX)`:cnt===3?`${a.name} (3/4)`:a.name;
+    const isMaxed=cnt>=maxEvents&&a.id!==currentSelId;
+    const label=cnt>=maxEvents?`${a.name} (${cnt}/${maxEvents} MAX)`:cnt===maxEvents-1?`${a.name} (${cnt}/${maxEvents})`:a.name;
     return `<option value="${a.id}"${isMaxed?' disabled':''} ${a.id===currentSelId?' selected':''}>${label}</option>`;
   }).join('');
 }
@@ -1280,13 +1537,28 @@ function deleteEvent(id){
 }
 
 // ─── SYNC ───
-async function syncAll(){
-  if(state.demoMode){showToast('Demo mode — no sync');return;}
+async function syncSeasons(){
+  // Called after connecting — loads seasons list then shows selector
+  setStatus('Connecting...',true);
+  try{
+    const res=await fetch(`${state.apiUrl}?action=getAll&type=seasons`);
+    const data=await res.json();
+    if(data.seasons) state.seasons=data.seasons;
+    setStatus('Connected',true);
+  }catch(e){
+    setStatus('Offline',false);
+    showToast('Could not reach Google Sheets',true);
+  }
+  showSeasonSelector();
+}
+async function syncSeasonData(){
+  if(!state.activeSeason) return;
+  const sid=state.activeSeason.id;
   const btn=document.getElementById('sync-btn');
   btn.classList.add('syncing'); btn.textContent='↻ SYNCING...';
   setStatus('Syncing...',true);
   try{
-    const res=await fetch(`${state.apiUrl}?action=getAll`);
+    const res=await fetch(`${state.apiUrl}?action=getAll&seasonId=${sid}`);
     const data=await res.json();
     if(data.athletes) state.athletes=data.athletes;
     if(data.meets) state.meets=data.meets;
@@ -1298,10 +1570,15 @@ async function syncAll(){
   }catch(e){setStatus('Offline',false);showToast('Sync failed — check URL',true);}
   btn.classList.remove('syncing'); btn.textContent='↻ SYNC';
 }
+function syncAll(){
+  if(state.demoMode){showToast('Demo mode — no sync');return;}
+  syncSeasonData();
+}
 async function pushData(type,data){
   if(state.demoMode) return;
+  const sid=state.activeSeason?state.activeSeason.id:'';
   try{
-    await fetch(state.apiUrl,{method:'POST',body:JSON.stringify({action:'set',type,data})});
+    await fetch(state.apiUrl,{method:'POST',body:JSON.stringify({action:'set',type,seasonId:sid,data})});
     document.getElementById('last-sync').textContent='Saved '+new Date().toLocaleTimeString();
   }catch(e){showToast('Save failed',true);}
 }
@@ -1332,6 +1609,12 @@ window.onload=()=>{
   if(u){document.getElementById('api-url').value=u;state.apiUrl=u;}
   if(t) document.getElementById('team-name').value=t;
   document.getElementById('script-code').textContent=APPS_SCRIPT_CODE;
+  // If we have a saved URL, go straight to season selector
+  if(u&&t){
+    state.teamName=t;
+    document.getElementById('setup-screen').style.display='none';
+    syncSeasons();
+  }
 };
 </script>
 </body>
