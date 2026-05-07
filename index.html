@@ -264,7 +264,10 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   <div class="tab-content" id="tab-records" style="display:none">
     <div class="section-header">
       <div class="section-title">MASTER RECORDS</div>
-      <button class="btn-add" onclick="exportCSV()" style="background:var(--green);color:#000;">⬇ CSV</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-add" onclick="cleanDuplicates()" style="background:var(--border);color:var(--muted);font-size:13px;">🧹 CLEAN</button>
+        <button class="btn-add" onclick="exportCSV()" style="background:var(--green);color:#000;">⬇ CSV</button>
+      </div>
     </div>
     <div class="filter-bar">
       <button class="filter-pill active" onclick="filterRecords('all',this)">ALL</button>
@@ -1236,9 +1239,25 @@ function addSlotGeneric(evKey, evId){
 }
 
 // ─── SAVE ───
+function deduplicateEntries(entries){
+  // Keep only the LAST entry per athlete+event+meet combination
+  // For relays: per event+meet+gender
+  const seen = new Map();
+  // Process in order so last one wins
+  entries.forEach(e => {
+    const isRelay = e.type==='relay_sprint'||e.type==='relay_distance';
+    const key = isRelay
+      ? `${e.meetId}|${e.gender}|${e.eventId}`
+      : `${e.meetId}|${e.gender}|${e.eventId}|${e.athleteId}`;
+    seen.set(key, e);
+  });
+  return [...seen.values()];
+}
+
 function saveMeetSheetSilent(){
   const meetId=state.activeMeetId;
   const gender=state.activeMeetGender;
+  // Remove ALL entries for this meet+gender before re-building from DOM
   state.meetEntries=state.meetEntries.filter(e=>!(e.meetId===meetId&&e.gender===gender));
 
   const sortedEvents=[...state.events].sort((a,b)=>(a.order||99)-(b.order||99));
@@ -1332,6 +1351,8 @@ function saveMeetSheetSilent(){
 
 function saveMeetSheet(){
   saveMeetSheetSilent();
+  // Always deduplicate the full entries array before pushing
+  state.meetEntries = deduplicateEntries(state.meetEntries);
   if(!state.demoMode){
     pushData('meetEntries',state.meetEntries);
     pushData('meets',state.meets);
@@ -1425,6 +1446,22 @@ function toggleSortDir(){
   btn.textContent=recordsSortDir==='asc'?'↑':'↓';
   btn.classList.toggle('desc',recordsSortDir==='desc');
   renderRecords();
+}
+
+// ─── CLEAN DUPLICATES ───
+function cleanDuplicates(){
+  const before = state.meetEntries.length;
+  state.meetEntries = deduplicateEntries(state.meetEntries);
+  const removed = before - state.meetEntries.length;
+  if(removed === 0){
+    showToast('No duplicates found ✓');
+    return;
+  }
+  renderRecords();
+  if(!state.demoMode){
+    pushData('meetEntries', state.meetEntries);
+  }
+  showToast(`Removed ${removed} duplicate${removed>1?'s':''} ✓`);
 }
 
 // ─── CSV EXPORT ───
@@ -1562,7 +1599,7 @@ async function syncSeasonData(){
     const data=await res.json();
     if(data.athletes) state.athletes=data.athletes;
     if(data.meets) state.meets=data.meets;
-    if(data.meetEntries) state.meetEntries=data.meetEntries;
+    if(data.meetEntries) state.meetEntries=deduplicateEntries(data.meetEntries);
     if(data.events&&data.events.length) state.events=data.events;
     renderAll();
     document.getElementById('last-sync').textContent='Synced '+new Date().toLocaleTimeString();
