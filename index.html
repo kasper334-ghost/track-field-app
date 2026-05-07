@@ -290,7 +290,7 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
 <div class="modal-overlay" id="athlete-modal" style="display:none">
   <div class="modal">
     <div class="modal-title" id="athlete-modal-title">ADD ATHLETE</div>
-    <div class="form-group"><label class="field-label">Full Name</label><input type="text" class="field-input" id="ath-name" placeholder="First Last"/></div>
+    <div class="form-group"><label class="field-label">Name (Last, First)</label><input type="text" class="field-input" id="ath-name" placeholder="Smith, Jordan"/></div>
     <div class="form-row">
       <div class="form-group"><label class="field-label">Gender</label>
         <select class="field-input" id="ath-gender"><option value="M">Male</option><option value="F">Female</option></select>
@@ -488,7 +488,8 @@ function renderRoster(){
   if(!state.athletes.length){
     list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏃</div><p>No athletes yet.<br>Tap + ATHLETE to add your roster.</p></div>`;return;
   }
-  list.innerHTML=state.athletes.map(a=>`
+  const sorted=[...state.athletes].sort((a,b)=>a.name.localeCompare(b.name));
+  list.innerHTML=sorted.map(a=>`
     <div class="athlete-card">
       <div class="athlete-info">
         <div class="athlete-name">${a.name}<span class="badge badge-${a.gender.toLowerCase()}">${a.gender}</span></div>
@@ -633,7 +634,7 @@ function renderMeetSheetBody(){
   const body=document.getElementById('meet-sheet-body');
   const gender=state.activeMeetGender;
   const meetId=state.activeMeetId;
-  const athletes=state.athletes.filter(a=>a.gender===gender);
+  const athletes=state.athletes.filter(a=>a.gender===gender).sort((a,b)=>a.name.localeCompare(b.name));
 
   if(!athletes.length){
     body.innerHTML=`<div class="empty-state"><div class="empty-icon">${gender==='M'?'♂':'♀'}</div><p>No ${gender==='M'?'male':'female'} athletes on roster yet.<br>Add athletes in the Roster tab first.</p></div>`;
@@ -862,8 +863,7 @@ function toggleBlock(id){ document.getElementById(id).classList.toggle('open'); 
 function refreshEventCounter(){
   const meetId=state.activeMeetId;
   const gender=state.activeMeetGender;
-  const athletes=state.athletes.filter(a=>a.gender===gender);
-  // Build counts from DOM (live, unsaved)
+  const athletes=state.athletes.filter(a=>a.gender===gender).sort((a,b)=>a.name.localeCompare(b.name));
   const counts={};
   state.events.forEach(ev=>{
     const evKey=`${meetId}_${gender}_${ev.id}`;
@@ -966,7 +966,7 @@ function addSlotGeneric(evKey, evId){
   const gender=state.activeMeetGender;
   const meetId=state.activeMeetId;
   const ev=state.events.find(e=>e.id===evId);
-  const athletes=state.athletes.filter(a=>a.gender===gender);
+  const athletes=state.athletes.filter(a=>a.gender===gender).sort((a,b)=>a.name.localeCompare(b.name));
   const eventCounts=buildEventCounts(meetId,gender,null);
   const existing=state.meetEntries.filter(e=>e.meetId===meetId&&e.gender===gender&&e.eventId===evId);
   const block=document.getElementById(`block_${evKey}`);
@@ -1075,7 +1075,10 @@ function saveMeetSheetSilent(){
 
 function saveMeetSheet(){
   saveMeetSheetSilent();
-  if(!state.demoMode) pushData('meetEntries',state.meetEntries);
+  if(!state.demoMode){
+    pushData('meetEntries',state.meetEntries);
+    pushData('meets',state.meets);
+  }
   showToast('Meet saved ✓');
   renderMeets(); renderRecords();
 }
