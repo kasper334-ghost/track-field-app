@@ -780,6 +780,7 @@ function saveAthlete(){
   const athlete={id:state.editingAthleteId||'a'+Date.now(),name,gender:document.getElementById('ath-gender').value,grade:document.getElementById('ath-grade').value,age:document.getElementById('ath-age').value};
   if(state.editingAthleteId) state.athletes=state.athletes.map(a=>a.id===state.editingAthleteId?athlete:a);
   else state.athletes.push(athlete);
+  state.athletes = deduplicateAthletes(state.athletes);
   closeModal('athlete-modal'); renderAll();
   if(!state.demoMode) pushData('roster',state.athletes);
   showToast(state.editingAthleteId?'Updated ✓':'Added ✓');
@@ -1241,15 +1242,23 @@ function addSlotGeneric(evKey, evId){
 // ─── SAVE ───
 function deduplicateEntries(entries){
   // Keep only the LAST entry per athlete+event+meet combination
-  // For relays: per event+meet+gender
   const seen = new Map();
-  // Process in order so last one wins
   entries.forEach(e => {
     const isRelay = e.type==='relay_sprint'||e.type==='relay_distance';
     const key = isRelay
       ? `${e.meetId}|${e.gender}|${e.eventId}`
       : `${e.meetId}|${e.gender}|${e.eventId}|${e.athleteId}`;
     seen.set(key, e);
+  });
+  return [...seen.values()];
+}
+
+function deduplicateAthletes(athletes){
+  // Keep last entry per athlete name+gender (case-insensitive)
+  const seen = new Map();
+  athletes.forEach(a => {
+    const key = `${a.name.trim().toLowerCase()}|${a.gender}`;
+    seen.set(key, a);
   });
   return [...seen.values()];
 }
@@ -1450,18 +1459,27 @@ function toggleSortDir(){
 
 // ─── CLEAN DUPLICATES ───
 function cleanDuplicates(){
-  const before = state.meetEntries.length;
+  const beforeEntries = state.meetEntries.length;
+  const beforeAthletes = state.athletes.length;
   state.meetEntries = deduplicateEntries(state.meetEntries);
-  const removed = before - state.meetEntries.length;
-  if(removed === 0){
+  state.athletes = deduplicateAthletes(state.athletes);
+  const removedEntries = beforeEntries - state.meetEntries.length;
+  const removedAthletes = beforeAthletes - state.athletes.length;
+  const total = removedEntries + removedAthletes;
+  if(total === 0){
     showToast('No duplicates found ✓');
     return;
   }
-  renderRecords();
+  renderAll();
   if(!state.demoMode){
     pushData('meetEntries', state.meetEntries);
+    pushData('roster', state.athletes);
   }
-  showToast(`Removed ${removed} duplicate${removed>1?'s':''} ✓`);
+  const msg = [
+    removedAthletes ? `${removedAthletes} roster duplicate${removedAthletes>1?'s':''}` : '',
+    removedEntries  ? `${removedEntries} result duplicate${removedEntries>1?'s':''}` : '',
+  ].filter(Boolean).join(', ');
+  showToast(`Removed: ${msg} ✓`);
 }
 
 // ─── CSV EXPORT ───
@@ -1597,7 +1615,7 @@ async function syncSeasonData(){
   try{
     const res=await fetch(`${state.apiUrl}?action=getAll&seasonId=${sid}`);
     const data=await res.json();
-    if(data.athletes) state.athletes=data.athletes;
+    if(data.athletes) state.athletes=deduplicateAthletes(data.athletes);
     if(data.meets) state.meets=data.meets;
     if(data.meetEntries) state.meetEntries=deduplicateEntries(data.meetEntries);
     if(data.events&&data.events.length) state.events=data.events;
