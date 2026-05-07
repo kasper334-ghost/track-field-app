@@ -119,6 +119,10 @@ select.field-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http:/
 .filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .filter-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
 .filter-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(247,183,49,0.08);}
+.sort-pill{padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.sort-pill.active{border-color:var(--blue);color:var(--blue);background:rgba(52,152,219,0.08);}
+.sort-dir-btn{padding:5px 10px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;line-height:1;}
+.sort-dir-btn.desc{color:var(--blue);border-color:var(--blue);}
 .record-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:2px;}
 .record-athlete{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
 .record-event{font-size:12px;color:var(--muted);margin-top:2px;}
@@ -216,13 +220,24 @@ pre#script-code{background:var(--mid);border:1px solid var(--border);border-radi
   </div>
 
   <div class="tab-content" id="tab-records" style="display:none">
-    <div class="section-header"><div class="section-title">MASTER RECORDS</div></div>
+    <div class="section-header">
+      <div class="section-title">MASTER RECORDS</div>
+      <button class="btn-add" onclick="exportCSV()" style="background:var(--green);color:#000;">⬇ CSV</button>
+    </div>
     <div class="filter-bar">
       <button class="filter-pill active" onclick="filterRecords('all',this)">ALL</button>
       <button class="filter-pill" onclick="filterRecords('M',this)">BOYS</button>
       <button class="filter-pill" onclick="filterRecords('F',this)">GIRLS</button>
     </div>
     <div id="filter-event-bar" class="filter-bar" style="margin-top:-6px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Sort:</span>
+      <button class="sort-pill active" onclick="setSort('event',this)">Event</button>
+      <button class="sort-pill" onclick="setSort('athlete',this)">Athlete</button>
+      <button class="sort-pill" onclick="setSort('result',this)">Result</button>
+      <button class="sort-pill" onclick="setSort('meet',this)">Meet</button>
+      <button class="sort-dir-btn" id="sort-dir-btn" onclick="toggleSortDir()" title="Toggle sort direction">↑</button>
+    </div>
     <div id="records-list"></div>
   </div>
 
@@ -526,14 +541,15 @@ function renderMeets(){
   }
   list.innerHTML=state.meets.map(m=>{
     const ec=state.meetEntries.filter(e=>e.meetId===m.id&&e.athleteId).length;
-    return `<div class="meet-list-item" onclick="openMeetSheet('${m.id}')">
-      <div>
+    return `<div class="meet-list-item">
+      <div onclick="openMeetSheet('${m.id}')" style="flex:1;min-width:0;">
         <div class="meet-item-name">${m.name}</div>
         <div class="meet-item-date">${m.date||'No date'}${m.location?' · '+m.location:''}</div>
+        <div class="meet-item-count" style="margin-top:3px;">${ec} entries · Tap to open ▶</div>
       </div>
-      <div style="text-align:right;">
-        <div class="meet-item-count">${ec} entries</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px;">▶ Open</div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;margin-left:10px;">
+        <button class="btn-icon" onclick="openEditMeetModal('${m.id}')" title="Rename meet" style="font-size:13px;">✏️</button>
+        <button class="btn-icon" onclick="deleteMeet('${m.id}')" title="Delete meet" style="font-size:13px;">🗑️</button>
       </div>
     </div>`;
   }).join('');
@@ -553,6 +569,41 @@ function createMeet(){
   if(!state.demoMode) pushData('meets',state.meets);
   showToast(`${name} created ✓`);
   openMeetSheet(meet.id);
+}
+function openEditMeetModal(id){
+  const meet=state.meets.find(m=>m.id===id);
+  document.getElementById('nm-name').value=meet.name;
+  document.getElementById('nm-date').value=meet.date||'';
+  document.getElementById('nm-location').value=meet.location||'';
+  // reuse modal but switch button to save edit
+  document.querySelector('#new-meet-modal .modal-title').textContent='EDIT MEET';
+  document.querySelector('#new-meet-modal .btn-save').onclick=()=>saveMeetEdit(id);
+  document.getElementById('new-meet-modal').style.display='flex';
+}
+function saveMeetEdit(id){
+  const name=document.getElementById('nm-name').value.trim();
+  if(!name){showToast('Name required',true);return;}
+  state.meets=state.meets.map(m=>m.id===id?{...m,name,date:document.getElementById('nm-date').value,location:document.getElementById('nm-location').value.trim()}:m);
+  // reset modal button back to create
+  document.querySelector('#new-meet-modal .modal-title').textContent='NEW MEET';
+  document.querySelector('#new-meet-modal .btn-save').onclick=createMeet;
+  closeModal('new-meet-modal');
+  renderMeets(); renderRecords();
+  if(!state.demoMode) pushData('meets',state.meets);
+  showToast('Meet updated ✓');
+}
+function deleteMeet(id){
+  const meet=state.meets.find(m=>m.id===id);
+  const entryCount=state.meetEntries.filter(e=>e.meetId===id).length;
+  const msg=entryCount>0
+    ?`Delete "${meet.name}"? This will also delete ${entryCount} entries. This cannot be undone.`
+    :`Delete "${meet.name}"?`;
+  if(!confirm(msg)) return;
+  state.meets=state.meets.filter(m=>m.id!==id);
+  state.meetEntries=state.meetEntries.filter(e=>e.meetId!==id);
+  renderMeets(); renderRecords();
+  if(!state.demoMode){ pushData('meets',state.meets); pushData('meetEntries',state.meetEntries); }
+  showToast('Meet deleted');
 }
 
 // ─── MEET SHEET ───
@@ -1031,35 +1082,152 @@ function saveMeetSheet(){
 
 // ─── RECORDS ───
 let recordsGenderFilter='all', recordsEventFilter='all';
+let recordsSortField='event', recordsSortDir='asc';
+
 function renderRecords(){
   const list=document.getElementById('records-list');
   const meetMap={};
-  state.meets.forEach(m=>meetMap[m.id]=m.name);
+  state.meets.forEach(m=>meetMap[m.id]=m);
   let entries=[...state.meetEntries].filter(e=>e.athleteId&&e.result);
   if(recordsGenderFilter==='M') entries=entries.filter(e=>e.gender==='M');
   if(recordsGenderFilter==='F') entries=entries.filter(e=>e.gender==='F');
+
   const allEvNames=[...new Set(state.meetEntries.map(e=>e.eventName))].sort();
   const evBar=document.getElementById('filter-event-bar');
   evBar.innerHTML=allEvNames.length?
     `<button class="filter-pill ${recordsEventFilter==='all'?'active':''}" onclick="filterEvent('all',this)">ALL</button>`
     +allEvNames.map(ev=>`<button class="filter-pill ${recordsEventFilter===ev?'active':''}" onclick="filterEvent(${JSON.stringify(ev)},this)">${ev}</button>`).join('') : '';
   if(recordsEventFilter!=='all') entries=entries.filter(e=>e.eventName===recordsEventFilter);
+
   if(!entries.length){
     list.innerHTML=`<div class="empty-state"><div class="empty-icon">🏆</div><p>No records yet.<br>Log results in a meet to build the master sheet.</p></div>`;return;
   }
-  entries.sort((a,b)=>a.eventName.localeCompare(b.eventName)||a.athleteName.localeCompare(b.athleteName));
-  list.innerHTML=entries.map(e=>`
-    <div class="record-row">
-      <div><div class="record-athlete">${e.athleteName}</div><div class="record-event">${e.eventName}</div></div>
-      <div><div class="record-result">${e.result}</div><div class="record-meet">${meetMap[e.meetId]||''}</div></div>
-    </div>`).join('');
+
+  // sorting
+  entries.sort((a,b)=>{
+    let valA='', valB='';
+    if(recordsSortField==='event')   { valA=a.eventName||''; valB=b.eventName||''; }
+    if(recordsSortField==='athlete') { valA=a.athleteName||''; valB=b.athleteName||''; }
+    if(recordsSortField==='meet')    { valA=(meetMap[a.meetId]?.date||meetMap[a.meetId]?.name||''); valB=(meetMap[b.meetId]?.date||meetMap[b.meetId]?.name||''); }
+    if(recordsSortField==='result')  { return sortByResult(a,b) * (recordsSortDir==='asc'?1:-1); }
+    const cmp=valA.localeCompare(valB);
+    return recordsSortDir==='asc'?cmp:-cmp;
+  });
+
+  list.innerHTML=entries.map(e=>{
+    const meet=meetMap[e.meetId];
+    const genderBadge=e.gender?`<span class="badge badge-${e.gender.toLowerCase()}" style="font-size:10px;">${e.gender}</span>`:'';
+    return `<div class="record-row">
+      <div>
+        <div class="record-athlete">${e.athleteName} ${genderBadge}</div>
+        <div class="record-event">${e.eventName}</div>
+      </div>
+      <div>
+        <div class="record-result">${e.result}</div>
+        <div class="record-meet">${meet?meet.name+(meet.date?' · '+meet.date:''):''}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
+
+function sortByResult(a, b){
+  // field events: parse feet/inches to decimal feet
+  if(a.measurement==='feet_inches'){
+    return parseFeetInches(b.result) - parseFeetInches(a.result); // longer = better, so desc by default
+  }
+  // time events: parse to ms, lower = faster
+  const msA=parseTimeToMs(a.result), msB=parseTimeToMs(b.result);
+  if(msA!==null&&msB!==null) return msA-msB;
+  return (a.result||'').localeCompare(b.result||'');
+}
+function parseFeetInches(str){
+  if(!str) return 0;
+  const m=str.match(/(\d+)'?\s*(\d*\.?\d*)"/);
+  if(!m) return 0;
+  return parseFloat(m[1])+(parseFloat(m[2]||0)/12);
+}
+
 function filterRecords(type,btn){
   recordsGenderFilter=type;
   document.querySelectorAll('#tab-records .filter-bar:first-of-type .filter-pill').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active'); renderRecords();
 }
 function filterEvent(ev,btn){ recordsEventFilter=ev; renderRecords(); }
+function setSort(field,btn){
+  recordsSortField=field;
+  document.querySelectorAll('.sort-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecords();
+}
+function toggleSortDir(){
+  recordsSortDir=recordsSortDir==='asc'?'desc':'asc';
+  const btn=document.getElementById('sort-dir-btn');
+  btn.textContent=recordsSortDir==='asc'?'↑':'↓';
+  btn.classList.toggle('desc',recordsSortDir==='desc');
+  renderRecords();
+}
+
+// ─── CSV EXPORT ───
+function exportCSV(){
+  const meetMap={};
+  state.meets.forEach(m=>meetMap[m.id]=m);
+  let entries=[...state.meetEntries].filter(e=>e.athleteId&&e.result);
+  if(recordsGenderFilter==='M') entries=entries.filter(e=>e.gender==='M');
+  if(recordsGenderFilter==='F') entries=entries.filter(e=>e.gender==='F');
+  if(recordsEventFilter!=='all') entries=entries.filter(e=>e.eventName===recordsEventFilter);
+
+  if(!entries.length){showToast('No records to export',true);return;}
+
+  // Sort same as current view
+  entries.sort((a,b)=>{
+    if(recordsSortField==='result') return sortByResult(a,b)*(recordsSortDir==='asc'?1:-1);
+    let valA='',valB='';
+    if(recordsSortField==='event'){valA=a.eventName;valB=b.eventName;}
+    if(recordsSortField==='athlete'){valA=a.athleteName;valB=b.athleteName;}
+    if(recordsSortField==='meet'){valA=meetMap[a.meetId]?.date||'';valB=meetMap[b.meetId]?.date||'';}
+    return (recordsSortDir==='asc'?1:-1)*valA.localeCompare(valB);
+  });
+
+  // Find athlete details for grade/age
+  const athMap={};
+  state.athletes.forEach(a=>athMap[a.id]=a);
+
+  const headers=['Athlete','Gender','Grade','Age','Event','Result','Place','Meet','Date','Location','Notes'];
+  const rows=entries.map(e=>{
+    const meet=meetMap[e.meetId]||{};
+    const ath=athMap[e.athleteId]||{};
+    return [
+      csvEsc(e.athleteName),
+      e.gender==='M'?'Male':'Female',
+      csvEsc(ath.grade||''),
+      csvEsc(ath.age||''),
+      csvEsc(e.eventName),
+      csvEsc(e.result),
+      csvEsc(e.place||''),
+      csvEsc(meet.name||''),
+      csvEsc(meet.date||''),
+      csvEsc(meet.location||''),
+      csvEsc(e.notes||''),
+    ].join(',');
+  });
+
+  const csv=[headers.join(','),...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const timestamp=new Date().toISOString().slice(0,10);
+  const filterLabel=recordsEventFilter!=='all'?`_${recordsEventFilter.replace(/\s+/g,'_')}`:'';
+  const genderLabel=recordsGenderFilter!=='all'?`_${recordsGenderFilter==='M'?'Boys':'Girls'}`:'';
+  a.download=`TF_Records${genderLabel}${filterLabel}_${timestamp}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV downloaded ✓');
+}
+function csvEsc(val){
+  const s=String(val||'');
+  return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;
+}
 
 // ─── EVENTS TAB ───
 function renderEventsList(){
